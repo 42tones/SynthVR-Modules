@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="PiEjaB" name="SynthVR-Native" projectType="dll" version="0.0.1"
+              companyName="42tones" companyWebsite="www.42tones.com" companyEmail="hello@42tones.com"
+              cppLanguageStandard="17" displaySplashScreen="1" jucerFormatVersion="1">
+  <MAINGROUP id="qVSXRs" name="SynthVR-Native">
+    <GROUP id="{9FCFD047-2980-44E1-F2D7-B096F62EFC8D}" name="Source">
+      <GROUP id="{06EDF44F-1FA1-95A6-DD13-24F85E3EB545}" name="Utilities">
+        <FILE id="rgFget" name="ParameterUtils.h" compile="0" resource="0"
+              file="Source/ParameterUtils.h"/>
+      </GROUP>
+      <GROUP id="{42F2B79D-7F3F-EA2C-373B-636993A10964}" name="Includes">
+        <GROUP id="{A2BB186D-579E-DB1A-6397-CC1E9E511862}" name="WaveTableOsc">
+          <FILE id="LhphQi" name="WaveTableOsc.h" compile="0" resource="0" file="Source/WaveTableOsc.h"/>
+          <FILE id="x0m1bU" name="WaveUtils.cpp" compile="1" resource="0" file="Source/WaveUtils.cpp"/>
+          <FILE id="kjWhbc" name="WaveUtils.h" compile="0" resource="0" file="Source/WaveUtils.h"/>
+        </GROUP>
+        <FILE id="xcf5Hz" name="json.hpp" compile="0" resource="0" file="Source/json.hpp"/>
+        <FILE id="ehXACs" name="SingleSampleLadderFilter.cpp" compile="1" resource="0"
+              file="Source/SingleSampleLadderFilter.cpp"/>
+        <FILE id="l2nYIY" name="SingleSampleLadderFilter.h" compile="0" resource="0"
+              file="Source/SingleSampleLadderFilter.h"/>
+      </GROUP>
+      <GROUP id="{A89DF260-FFFC-6B16-A58B-C5F529690808}" name="API">
+        <FILE id="Zhg5m5" name="ProcessorAPI.cpp" compile="1" resource="0"
+              file="Source/ProcessorAPI.cpp"/>
+        <FILE id="yNM2ks" name="ProcessorAPI.h" compile="0" resource="0" file="Source/ProcessorAPI.h"/>
+        <FILE id="cXkyJH" name="ProcessorAPIUtilities.h" compile="0" resource="0"
+              file="Source/ProcessorAPIUtilities.h"/>
+      </GROUP>
+      <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
+        <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
+          <GROUP id="{D5643F66-793C-5FBA-C74F-6DA3610EB981}" name="Space">
+            <FILE id="YB4iFy" name="FreeverbProcessor.cpp" compile="1" resource="0"
+                  file="Source/FreeverbProcessor.cpp"/>
+            <FILE id="F9OTNw" name="FreeverbProcessor.h" compile="0" resource="0"
+                  file="Source/FreeverbProcessor.h"/>
+          </GROUP>
+          <GROUP id="{D81A4540-0151-2FB7-2BB4-6F2DFE8C42F0}" name="Filter">
+            <FILE id="xXQ4Y5" name="MultiModeLadderFilter.cpp" compile="1" resource="0"
+                  file="Source/MultiModeLadderFilter.cpp"/>
+            <FILE id="ddHrzk" name="MultiModeLadderFilter.h" compile="0" resource="0"
+                  file="Source/MultiModeLadderFilter.h"/>
+          </GROUP>
+          <GROUP id="{C49FB303-E3A0-7E92-4294-D65D59D290D5}" name="Wave">
+            <FILE id="nr8KwS" name="WavetableVCOProcessor.cpp" compile="1" resource="0"
+                  file="Source/WavetableVCOProcessor.cpp"/>
+            <FILE id="GWG9ky" name="WavetableVCOProcessor.h" compile="0" resource="0"
+                  file="Source/WavetableVCOProcessor.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{2856ED56-B26C-CD67-3E4D-B8CE18C32C89}" name="TestSet">
+          <FILE id="RnXcJo" name="CVQuantizerTestProcessor.cpp" compile="1" resource="0"
+                file="Source/CVQuantizerTestProcessor.cpp"/>
+          <FILE id="gtpR1O" name="CVQuantizerTestProcessor.h" compile="0" resource="0"
+                file="Source/CVQuantizerTestProcessor.h"/>
+          <FILE id="xkfVHB" name="VelocityTrackingProcessor.cpp" compile="1"
+                resource="0" file="Source/VelocityTrackingProcessor.cpp"/>
+          <FILE id="gdFONw" name="VelocityTrackingProcessor.h" compile="0" resource="0"
+                file="Source/VelocityTrackingProcessor.h"/>
+          <FILE id="Lu7gnB" name="MixerTestProcessor.cpp" compile="1" resource="0"
+                file="Source/MixerTestProcessor.cpp"/>
+          <FILE id="FNmzCn" name="MixerTestProcessor.h" compile="0" resource="0"
+                file="Source/MixerTestProcessor.h"/>
+          <FILE id="PeKnGj" name="EnvelopeGeneratorProcessor.cpp" compile="1"
+                resource="0" file="Source/EnvelopeGeneratorProcessor.cpp"/>
+          <FILE id="vXMMaU" name="EnvelopeGeneratorProcessor.h" compile="0" resource="0"
+                file="Source/EnvelopeGeneratorProcessor.h"/>
+          <FILE id="sFW8jz" name="SignalSplitterProcessor.cpp" compile="1" resource="0"
+                file="Source/SignalSplitterProcessor.cpp"/>
+          <FILE id="fe1Y85" name="SignalSplitterProcessor.h" compile="0" resource="0"
+                file="Source/SignalSplitterProcessor.h"/>
+          <FILE id="S79SJS" name="MasterClockProcessor.cpp" compile="1" resource="0"
+                file="Source/MasterClockProcessor.cpp"/>
+          <FILE id="s6ktuC" name="MasterClockProcessor.h" compile="0" resource="0"
+                file="Source/MasterClockProcessor.h"/>
+          <FILE id="RhMWI7" name="AmplifierTestProcessor.cpp" compile="1" resource="0"
+                file="Source/AmplifierTestProcessor.cpp"/>
+          <FILE id="D66vmv" name="AmplifierTestProcessor.h" compile="0" resource="0"
+                file="Source/AmplifierTestProcessor.h"/>
+          <FILE id="DmozU1" name="MultiChannelTestProcessor.cpp" compile="1"
+                resource="0" file="Source/MultiChannelTestProcessor.cpp"/>
+          <FILE id="rPzDfx" name="MultiChannelTestProcessor.h" compile="0" resource="0"
+                file="Source/MultiChannelTestProcessor.h"/>
+          <FILE id="k0np5Y" name="OscillatorTestProcessor.cpp" compile="1" resource="0"
+                file="Source/OscillatorTestProcessor.cpp"/>
+          <FILE id="JRLhmZ" name="OscillatorTestProcessor.h" compile="0" resource="0"
+                file="Source/OscillatorTestProcessor.h"/>
+          <FILE id="tuMApk" name="SequencerTestProcessor.cpp" compile="1" resource="0"
+                file="Source/SequencerTestProcessor.cpp"/>
+          <FILE id="q4QWFH" name="SequencerTestProcessor.h" compile="0" resource="0"
+                file="Source/SequencerTestProcessor.h"/>
+          <FILE id="F3RhLG" name="SingleChannelTestProcessor.cpp" compile="1"
+                resource="0" file="Source/SingleChannelTestProcessor.cpp"/>
+          <FILE id="tMM8OI" name="SingleChannelTestProcessor.h" compile="0" resource="0"
+                file="Source/SingleChannelTestProcessor.h"/>
+        </GROUP>
+        <FILE id="FpXxv9" name="BaseProcessor.h" compile="0" resource="0" file="Source/BaseProcessor.h"/>
+        <FILE id="dS9Tc4" name="ProcessorFactory.h" compile="0" resource="0"
+              file="Source/ProcessorFactory.h"/>
+      </GROUP>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../SynthVR-Unity/Assets/Plugins/macOS/SynthVR-Native.dylib"/>
+        <CONFIGURATION name="Release" binaryPath="../SynthVR-Unity/Assets/Plugins/macOS/SynthVR-Native.dylib"
+                       isDebug="1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <ANDROIDSTUDIO targetFolder="Builds/Android">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" androidArchitectures="armeabi-v7a"/>
+        <CONFIGURATION isDebug="0" name="Release" linkTimeOptimisation="0" androidArchitectures="armeabi-v7a"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </ANDROIDSTUDIO>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
+                       useRuntimeLibDLL="0"/>
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="../SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
+                       useRuntimeLibDLL="0"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_dsp" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <OSX buildEnabled="0"/>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+</JUCERPROJECT>
