@@ -20,20 +20,6 @@ namespace synthvr
         //==============================================================================
         const String getName() const override { return "MultiModeLadderFilter"; }
     private:
-        float calculateMixModulation(
-            float originalValue, 
-            float modulationValue, 
-            float modulationAmount,
-            float clampLow = 0.0f,
-            float clampHigh = 1.0f);
-
-        float calculateFrequencyModulation(
-            float originalValue,
-            float modulationValue,
-            float modulationAmount,
-            float clampLow = 0.0f,
-            float clampHigh = 1.0f);
-
         int calculateMode(int baseMode, bool rollOffMode)
         {
             // There are 3 12dB/oct modes (0,1,2) and 3 24db/oct modes (3,4,5)

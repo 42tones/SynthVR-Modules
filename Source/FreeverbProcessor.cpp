@@ -41,19 +41,19 @@ void FreeverbProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &)
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         // Update audio rate reverb params
-        reverbParams.roomSize = calculateModulation(
+        reverbParams.roomSize = ParameterUtils::calculateModulationLinear(
             *roomSizeParam, 
             buffer.getSample(roomSizeInputChannel, sample), 
             *roomSizeModulationAmountParam);
 
-        *freezeDisplay = calculateModulation(
+        *freezeDisplay = ParameterUtils::calculateModulationLinear(
             *freezeParam,
             buffer.getSample(freezeInputChannel, sample),
             1.0f);
 
         reverbParams.freezeMode = *freezeDisplay;
 
-        mixValue = calculateModulation(
+        mixValue = ParameterUtils::calculateModulationLinear(
             *mixParam,
             buffer.getSample(mixInputChannel, sample),
             *mixModulationAmountParam);

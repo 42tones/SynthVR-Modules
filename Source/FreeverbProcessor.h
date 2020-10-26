@@ -24,13 +24,6 @@ namespace synthvr
         //==============================================================================
         const String getName() const override { return "FreeverbProcessor"; }
     private:
-        float calculateModulation(
-            float originalValue,
-            float modulationValue,
-            float modulationAmount,
-            float clampLow = 0.0f,
-            float clampHigh = 1.0f);
-
         AudioParameterFloat* roomSizeParam;
         AudioParameterFloat* roomSizeModulationAmountParam;
         AudioParameterFloat* dampingParam;
