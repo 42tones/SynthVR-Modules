@@ -46,30 +46,46 @@ void DelayProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
-        currentDelayInSamples = ParameterUtils::calculateModulationMultiply(
-            *timeParam, 
-            buffer.getSample(speedChannel, sample), 
-            *timeModulationAmountParam, 
-            0.001f, 
-            maxDelaySpeedSeconds) * sampleRate;
+        // Update modulation
+        if (isInputConnected[timeChannel])
+            currentDelayInSamples = ParameterUtils::calculateModulationMultiply(
+                *timeParam,
+                buffer.getSample(timeChannel, sample),
+                *timeModulationAmountParam,
+                0.001f,
+                maxDelaySpeedSeconds) * sampleRate;
+        else
+            currentDelayInSamples = *timeParam;
 
-        currentFeedback = ParameterUtils::calculateModulationMultiply(
-            *feedbackParam,
-            buffer.getSample(feedbackChannel, sample),
-            *feedbackModulationAmountParam,
-            0.001f,
-            maxFeedback);
+        if (isInputConnected[feedbackChannel])
+            currentFeedback = ParameterUtils::calculateModulationMultiply(
+                *feedbackParam,
+                buffer.getSample(feedbackChannel, sample),
+                *feedbackModulationAmountParam,
+                0.001f,
+                maxFeedback);
+        else
+            currentFeedback = *feedbackParam;
 
-        currentMix = ParameterUtils::calculateModulationMultiply(
-            *mixParam,
-            buffer.getSample(mixChannel, sample),
-            *mixModulationAmountParam);
+        if (isInputConnected[mixChannel])
+            currentMix = ParameterUtils::calculateModulationMultiply(
+                *mixParam,
+                buffer.getSample(mixChannel, sample),
+                *mixModulationAmountParam);
+        else
+            currentMix = *mixParam;
 
         // Pop a sample off the delay buffer
         currentDelayOutput = delay.popSample(0, currentDelayInSamples);
 
-        // Add current input sample with delay output feedback
+        // Process delay input
         currentDelayInput = buffer.getSample(inputChannel, sample);
+        if (isOutputConnected[sendChannel])
+        {
+            buffer.setSample(sendChannel, sample, currentDelayInput);
+            currentDelayInput = buffer.getSample(returnChannel, sample);
+        }
+
         currentDelayInput += currentDelayOutput * currentFeedback;
         currentDelayInput = filter.processSample(currentDelayInput);
         delay.pushSample(0, currentDelayInput);
