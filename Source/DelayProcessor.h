@@ -36,14 +36,22 @@ namespace synthvr
 
         dsp::DelayLine<float, dsp::DelayLineInterpolationTypes::Linear> delay;
         dsp::IIR::Filter<float> filter;
-        dsp::IIR::Coefficients<float>::Ptr filterCoefficients;
 
-        float defaultSpeedCenterMs = 500.0f;
+        float defaultSpeedCenterSeconds = 0.5f;
         float defaultHighShelfFrequency = 4000.0f;
         float defaultHighShelfQFactor = 0.3f;
         float defaultHighShelfColorFactor = 0.5f;
 
+        float maxDelaySpeedSeconds = 10.0f;
+        float maxFeedback = 1.4f;
+
         double sampleRate = 1000.0f;
+
+        float currentDelayInput = 0.0f;
+        float currentDelayOutput = 0.0f;
+        float currentDelayInSamples = 0.0f;
+        float currentMix = 0.0f;
+        float currentFeedback = 0.0f;
 
         enum
         {
@@ -55,7 +63,6 @@ namespace synthvr
             outputChannel = 0,
             sendChannel = 1
         };
-
 
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DelayProcessor)

@@ -66,8 +66,3 @@ void FreeverbProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &)
         reverb.processStereo(&buffer.getWritePointer(0)[sample], &buffer.getWritePointer(1)[sample], 1);
     }
 }
-
-float FreeverbProcessor::calculateModulation(float originalValue, float modulationValue, float modulationAmount, float clampLow, float clampHigh)
-{
-    return ParameterUtils::clamp(originalValue + (modulationValue * modulationAmount), clampLow, clampHigh);
-}

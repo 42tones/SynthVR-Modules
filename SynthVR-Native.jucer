@@ -10,16 +10,18 @@
               file="Source/ParameterUtils.h"/>
       </GROUP>
       <GROUP id="{42F2B79D-7F3F-EA2C-373B-636993A10964}" name="Includes">
+        <GROUP id="{7B63226F-4D78-20D8-7FE2-21BCE1ADD164}" name="SingleSampleLadderFilter">
+          <FILE id="ehXACs" name="SingleSampleLadderFilter.cpp" compile="1" resource="0"
+                file="Source/SingleSampleLadderFilter.cpp"/>
+          <FILE id="l2nYIY" name="SingleSampleLadderFilter.h" compile="0" resource="0"
+                file="Source/SingleSampleLadderFilter.h"/>
+        </GROUP>
         <GROUP id="{A2BB186D-579E-DB1A-6397-CC1E9E511862}" name="WaveTableOsc">
           <FILE id="LhphQi" name="WaveTableOsc.h" compile="0" resource="0" file="Source/WaveTableOsc.h"/>
           <FILE id="x0m1bU" name="WaveUtils.cpp" compile="1" resource="0" file="Source/WaveUtils.cpp"/>
           <FILE id="kjWhbc" name="WaveUtils.h" compile="0" resource="0" file="Source/WaveUtils.h"/>
         </GROUP>
         <FILE id="xcf5Hz" name="json.hpp" compile="0" resource="0" file="Source/json.hpp"/>
-        <FILE id="ehXACs" name="SingleSampleLadderFilter.cpp" compile="1" resource="0"
-              file="Source/SingleSampleLadderFilter.cpp"/>
-        <FILE id="l2nYIY" name="SingleSampleLadderFilter.h" compile="0" resource="0"
-              file="Source/SingleSampleLadderFilter.h"/>
       </GROUP>
       <GROUP id="{A89DF260-FFFC-6B16-A58B-C5F529690808}" name="API">
         <FILE id="Zhg5m5" name="ProcessorAPI.cpp" compile="1" resource="0"
