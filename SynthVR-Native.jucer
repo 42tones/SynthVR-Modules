@@ -30,6 +30,12 @@
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
         <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
+          <GROUP id="{8BA84226-EDB2-F8DF-2820-1370F2C7A4CB}" name="Echo">
+            <FILE id="D5JdrY" name="DelayProcessor.cpp" compile="1" resource="0"
+                  file="Source/DelayProcessor.cpp"/>
+            <FILE id="Lng6Ot" name="DelayProcessor.h" compile="0" resource="0"
+                  file="Source/DelayProcessor.h"/>
+          </GROUP>
           <GROUP id="{D5643F66-793C-5FBA-C74F-6DA3610EB981}" name="Space">
             <FILE id="YB4iFy" name="FreeverbProcessor.cpp" compile="1" resource="0"
                   file="Source/FreeverbProcessor.cpp"/>
@@ -143,9 +149,9 @@
     </ANDROIDSTUDIO>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../SynthVR/SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
                        useRuntimeLibDLL="0"/>
-        <CONFIGURATION isDebug="0" name="Release" binaryPath="../SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="../SynthVR/SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
                        useRuntimeLibDLL="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
