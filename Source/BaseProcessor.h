@@ -37,7 +37,10 @@ namespace synthvr
         AudioProcessorEditor* createEditor() override { return nullptr; }
         bool hasEditor() const override { return false; }
 
-        // DEFAULT SAVE / LOAD PARAMS
+        // TODO: Implement functions to get and set state with JSON binary instead of JSON string
+        void setStateInformation(const void* data, int sizeInBytes) override {}
+        void getStateInformation(MemoryBlock& destData) override {}
+
         const std::string getStateInformationJSON()
         {
             json parameterStates;
@@ -60,14 +63,6 @@ namespace synthvr
             return state.dump();
         }
 
-        void getStateInformation(MemoryBlock& destData) override
-        {
-            auto jsonStateString = getStateInformationJSON();
-            auto jsonState = json(jsonStateString);
-            // TODO: Save to binary
-            // copyXmlToBinary(xmlState, destData);
-        }
-
         const void setStateInformationJSON(std::string jsonString)
         {
             try {
@@ -87,22 +82,16 @@ namespace synthvr
                     }
             } catch(const std::exception& e) {
 #if JUCE_DEBUG
-                // TODO: Log exception to file
+                // TODO: Log exception to file or something
 #endif
             }
 
             onStateUpdated();
         }
 
-
-        void setStateInformation (const void* data, int sizeInBytes) override
-        {
-            // TODO: Parse JSON from binary
-        }
-
         void setFloatArrayData(const float* pointer, int length, int index)
         {
-            // Only write data if there is allocated space for it
+            // Only write float data if the processor preallocated some memory for it
             if (index < floatArrayData.size())
             {
                 floatArrayData[index] = std::vector<float>(pointer, pointer + length);
@@ -110,10 +99,21 @@ namespace synthvr
             }
         }
 
+        void setChannelConnected(int channel, bool isInput, bool isConnected)
+        {
+            if (isInput && channel < isInputConnected.size())
+                isInputConnected[channel] = isConnected;
+            else if (channel < isOutputConnected.size())
+                isOutputConnected[channel] = isConnected;
+        }
+
     protected:
         std::vector<std::vector<float>> floatArrayData = std::vector<std::vector<float>>();
+        std::vector<bool> isInputConnected = std::vector<bool>(getNumInputChannels());
+        std::vector<bool> isOutputConnected = std::vector<bool>(getNumOutputChannels());
 
         virtual void onStateUpdated() {}
+        virtual void onConnectionsUpdated() {}
         virtual void onFloatArrayDataUpdated() {}
 
         //==============================================================================

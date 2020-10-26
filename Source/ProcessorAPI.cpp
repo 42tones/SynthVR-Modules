@@ -155,3 +155,8 @@ void SetFloatArrayData(BaseProcessor* processor, float* data, int length, int in
 {
     processor->setFloatArrayData(data, length, index);
 }
+
+DLLExport void SetChannelConnected(BaseProcessor* processor, int channel, bool isInput, bool isConnected)
+{
+    processor->setChannelConnected(channel, isInput, isConnected);
+}
