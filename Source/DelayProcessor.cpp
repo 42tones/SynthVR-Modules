@@ -12,9 +12,9 @@ DelayProcessor::DelayProcessor() : BaseProcessor(BusesProperties()
     .withInput("Inputs", AudioChannelSet::discreteChannels(6))
     .withOutput("Output", AudioChannelSet::discreteChannels(2)))
 {
-    addParameter(timeParam = new AudioParameterFloat("time", "Time (s)", 0.0f, 4.0f, defaultSpeedCenterSeconds));
+    addParameter(timeParam = new AudioParameterFloat("time", "Time (s)", 0.001f, 4.0f, defaultSpeedCenterSeconds));
     addParameter(timeModulationAmountParam = new AudioParameterFloat("timeModulationAmount", "Time Modulation Amount", -1.0f, 1.0f, 0.0f));
-    addParameter(feedbackParam = new AudioParameterFloat("feedback", "Feedback", 0.0f, 1.1f, 0.5f));
+    addParameter(feedbackParam = new AudioParameterFloat("feedback", "Feedback", 0.0f, 0.95f, 0.5f));
     addParameter(feedbackModulationAmountParam = new AudioParameterFloat("feedbackModulationAmount", "Feedback Modulation Amount", -1.0f, 1.0f, 0.0f));
     addParameter(mixParam = new AudioParameterFloat("mix", "Mix", 0.0f, 1.0f, 0.35f));
     addParameter(mixModulationAmountParam = new AudioParameterFloat("mixModulationAmount", "Mix Modulation Amount", -1.0f, 1.0f, 0.0f));
@@ -32,7 +32,10 @@ void DelayProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamples
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
     this->delay.prepare(processSpec);
     this->delay.reset();
-    this->delay.setDelay(*timeParam);
+    this->delay.setDelay(*timeParam * sampleRate);
+
+    smoothedDelaySpeedSamples.reset(sampleRate, 0.1f);
+    smoothedDelaySpeedSamples.setCurrentAndTargetValue(*timeParam * sampleRate);
 
     this->filter.prepare(processSpec);
     this->filter.reset();
@@ -53,9 +56,17 @@ void DelayProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
                 buffer.getSample(timeChannel, sample),
                 *timeModulationAmountParam,
                 0.001f,
-                maxDelaySpeedSeconds) * sampleRate;
+                maxDelaySpeedSeconds);
         else
             currentDelayInSamples = *timeParam;
+
+        currentDelayInSamples *= sampleRate;
+        currentDelayInSamples = ParameterUtils::clamp(
+            currentDelayInSamples, 
+            minDelaySpeedSamples, 
+            maxDelaySpeedSamples);
+
+        smoothedDelaySpeedSamples.setTargetValue(currentDelayInSamples);
 
         if (isInputConnected[feedbackChannel])
             currentFeedback = ParameterUtils::calculateModulationMultiply(
@@ -75,28 +86,44 @@ void DelayProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
         else
             currentMix = *mixParam;
 
-        // Pop a sample off the delay buffer
-        currentDelayOutput = delay.popSample(0, currentDelayInSamples);
-
         // Process delay input
         currentDelayInput = buffer.getSample(inputChannel, sample);
-        if (isOutputConnected[sendChannel])
-        {
-            buffer.setSample(sendChannel, sample, currentDelayInput);
-            currentDelayInput = buffer.getSample(returnChannel, sample);
-        }
-
         currentDelayInput += currentDelayOutput * currentFeedback;
+
+        // This is where send/return should plug in
+
         currentDelayInput = filter.processSample(currentDelayInput);
         delay.pushSample(0, currentDelayInput);
+
+        // Pop a sample off the delay buffer
+        currentDelayOutput = delay.popSample(0, smoothedDelaySpeedSamples.getNextValue());
+
+        //if (isOutputConnected[sendChannel])
+        //{
+        //    buffer.setSample(sendChannel, sample, currentDelayInput);
+        //    currentDelayOutput = buffer.getSample(returnChannel, sample);
+        //}
+
+        buffer.setSample(outputChannel, sample, 
+            ParameterUtils::equalPowerCrossFade(
+                buffer.getSample(inputChannel, sample),
+                currentDelayOutput, 
+                currentMix));
     }
 }
 
 dsp::IIR::Coefficients<float>::Ptr synthvr::DelayProcessor::calculateFilterCoefficientsFromColor(float colorValue)
 {
-    return dsp::IIR::Coefficients<float>::makeHighShelf(
-        sampleRate,
-        defaultHighShelfFrequency,
-        defaultHighShelfQFactor,
-        1.0f + colorValue * defaultHighShelfColorFactor);
+    if (colorValue >= 0.0f)
+        return dsp::IIR::Coefficients<float>::makeLowShelf(
+            sampleRate,
+            defaultLowShelfFrequency,
+            defaultColorQFactor,
+            1.0f - colorValue * defaultColorFactor);
+    else
+        return dsp::IIR::Coefficients<float>::makeHighShelf(
+            sampleRate,
+            defaultHighShelfFrequency,
+            defaultColorQFactor,
+            1.0f + colorValue * defaultColorFactor);
 }

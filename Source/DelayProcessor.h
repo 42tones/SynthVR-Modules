@@ -36,16 +36,20 @@ namespace synthvr
         AudioParameterFloat* colorParam;
 
         // DSP elements
-        dsp::DelayLine<float, dsp::DelayLineInterpolationTypes::Linear> delay;
+        dsp::DelayLine<float, dsp::DelayLineInterpolationTypes::Linear> delay {441000};
         dsp::IIR::Filter<float> filter;
 
         // Settings / defaults
         float defaultSpeedCenterSeconds = 0.5f;
         float defaultHighShelfFrequency = 4000.0f;
-        float defaultHighShelfQFactor = 0.3f;
-        float defaultHighShelfColorFactor = 0.5f;
+        float defaultLowShelfFrequency = 1000.0f;
+        float defaultColorQFactor = 0.5f;
+        float defaultColorFactor = 0.5f;
+
+        float minDelaySpeedSamples = 5.0f;
+        float maxDelaySpeedSamples = 441000.0f;
         float maxDelaySpeedSeconds = 10.0f;
-        float maxFeedback = 1.4f;
+        float maxFeedback = 0.9999f;
 
         // Current processor state
         double sampleRate = 1000.0f;
@@ -54,15 +58,16 @@ namespace synthvr
         float currentDelayInSamples = 0.0f;
         float currentMix = 0.0f;
         float currentFeedback = 0.0f;
+        SmoothedValue<float> smoothedDelaySpeedSamples;
 
         // Channel name helpers
         enum
         {
             inputChannel = 0,
-            returnChannel = 1,
-            timeChannel = 2,
-            feedbackChannel = 3,
-            mixChannel = 4,
+            timeChannel = 1,
+            feedbackChannel = 2,
+            mixChannel = 3,
+            returnChannel = 4,
             outputChannel = 0,
             sendChannel = 1
         };
