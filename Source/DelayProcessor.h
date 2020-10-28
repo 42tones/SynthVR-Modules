@@ -44,7 +44,7 @@ namespace synthvr
 
 
         // Settings / defaults
-        float defaultSpeedCenterSeconds = 0.25f;
+        float defaultSpeedCenterSeconds = 0.5f;
         float defaultSpeedSmoothing = 0.2f;
         float defaultHighShelfFrequency = 4000.0f;
         float defaultLowShelfFrequency = 800.0f;

@@ -12,7 +12,7 @@ DelayProcessor::DelayProcessor() : BaseProcessor(BusesProperties()
     .withInput("Inputs", AudioChannelSet::discreteChannels(6))
     .withOutput("Output", AudioChannelSet::discreteChannels(2)))
 {
-    addParameter(timeParam = new AudioParameterFloat("time", "Time (s)", 0.001f, 2.0f, defaultSpeedCenterSeconds));
+    addParameter(timeParam = new AudioParameterFloat("time", "Time (s)", 0.01f, 2.0f, defaultSpeedCenterSeconds));
     addParameter(timeModulationAmountParam = new AudioParameterFloat("timeModulationAmount", "Time Modulation Amount", -1.0f, 1.0f, 0.0f));
     addParameter(feedbackParam = new AudioParameterFloat("feedback", "Feedback", 0.0f, maxFeedback, 0.5f));
     addParameter(feedbackModulationAmountParam = new AudioParameterFloat("feedbackModulationAmount", "Feedback Modulation Amount", -1.0f, 1.0f, 0.0f));
