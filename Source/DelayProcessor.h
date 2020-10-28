@@ -47,8 +47,8 @@ namespace synthvr
         float defaultSpeedCenterSeconds = 0.25f;
         float defaultSpeedSmoothing = 0.2f;
         float defaultHighShelfFrequency = 4000.0f;
-        float defaultLowShelfFrequency = 1000.0f;
-        float defaultColorQFactor = 0.5f;
+        float defaultLowShelfFrequency = 800.0f;
+        float defaultColorQFactor = 0.6f;
         float defaultColorFactor = 0.7f;
 
         float minDelaySpeedSamples = 50.0f;
