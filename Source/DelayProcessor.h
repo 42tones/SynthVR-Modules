@@ -24,6 +24,7 @@ namespace synthvr
         //==============================================================================
         const String getName() const override { return "DelayProcessor"; }
     private:
+        void UpdateModulation(juce::AudioSampleBuffer& buffer, int sample);
         dsp::IIR::Coefficients<float>::Ptr calculateFilterCoefficientsFromColor(float colorValue);
 
         // Processor parameters
@@ -38,17 +39,21 @@ namespace synthvr
         // DSP elements
         dsp::DelayLine<float, dsp::DelayLineInterpolationTypes::Linear> delay {441000};
         dsp::IIR::Filter<float> filter;
+        dsp::LookupTableTransform<float> saturationLUT{ [](float x) { return std::tanh(x); },
+                                                    -5.0f, 5.0f, 128 };
+
 
         // Settings / defaults
-        float defaultSpeedCenterSeconds = 0.5f;
+        float defaultSpeedCenterSeconds = 0.25f;
+        float defaultSpeedSmoothing = 0.2f;
         float defaultHighShelfFrequency = 4000.0f;
         float defaultLowShelfFrequency = 1000.0f;
         float defaultColorQFactor = 0.5f;
-        float defaultColorFactor = 0.5f;
+        float defaultColorFactor = 0.7f;
 
         float minDelaySpeedSamples = 5.0f;
-        float maxDelaySpeedSamples = 441000.0f;
-        float maxDelaySpeedSeconds = 10.0f;
+        float maxDelaySpeedSamples = 220500.0f;
+        float maxDelaySpeedSeconds = 5.0f;
         float maxFeedback = 0.9999f;
 
         // Current processor state
@@ -58,6 +63,7 @@ namespace synthvr
         float currentDelayInSamples = 0.0f;
         float currentMix = 0.0f;
         float currentFeedback = 0.0f;
+
         SmoothedValue<float> smoothedDelaySpeedSamples;
 
         // Channel name helpers
