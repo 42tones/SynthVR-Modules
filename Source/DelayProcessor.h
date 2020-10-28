@@ -51,7 +51,7 @@ namespace synthvr
         float defaultColorQFactor = 0.6f;
         float defaultColorFactor = 0.7f;
 
-        float minDelaySpeedSamples = 50.0f;
+        float minDelaySpeedSamples = 1.0f;
         float maxDelaySpeedSamples = 220500.0f;
         float maxDelaySpeedSeconds = 5.0f;
         float maxFeedback = 1.1f;

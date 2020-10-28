@@ -32,7 +32,7 @@ void DelayProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamples
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
     this->delay.prepare(processSpec);
     this->delay.reset();
-    this->delay.setDelay(*timeParam * sampleRate);
+    this->delay.setDelay(*timeParam * (float)sampleRate);
 
     smoothedDelaySpeedSamples.reset(sampleRate, defaultSpeedSmoothing);
     smoothedDelaySpeedSamples.setCurrentAndTargetValue(*timeParam * sampleRate);
@@ -89,7 +89,7 @@ void synthvr::DelayProcessor::UpdateModulation(juce::AudioSampleBuffer& buffer, 
     else
         currentDelayInSamples = *timeParam;
 
-    currentDelayInSamples *= sampleRate;
+    currentDelayInSamples *= (float)sampleRate;
     currentDelayInSamples = ParameterUtils::clamp(
         currentDelayInSamples,
         minDelaySpeedSamples,
