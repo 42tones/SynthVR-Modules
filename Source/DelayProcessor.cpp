@@ -64,7 +64,7 @@ void DelayProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
         // Do color filtering and saturation (to keep delay within safe values)
         currentDelayInput = filter.processSample(currentDelayInput);
-        currentDelayInput = saturationLUT.processSampleUnchecked(currentDelayInput);
+        currentDelayInput = saturationLUT.processSample(currentDelayInput);
         delay.pushSample(0, currentDelayInput);
 
         // Get the next sample off the delay buffer and mix it in to output
@@ -79,7 +79,6 @@ void DelayProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
 void synthvr::DelayProcessor::UpdateModulation(juce::AudioSampleBuffer& buffer, int sample)
 {
-    // Update modulation
     if (isInputConnected[timeChannel])
         currentDelayInSamples = ParameterUtils::calculateModulationMultiply(
             *timeParam,
