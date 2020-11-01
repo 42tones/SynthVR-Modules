@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="PiEjaB" name="SynthVR-Native" projectType="dll" version="0.0.1"
+<JUCERPROJECT id="PiEjaB" name="SynthVR-Native" projectType="dll" version="0.1.0"
               companyName="42tones" companyWebsite="www.42tones.com" companyEmail="hello@42tones.com"
               cppLanguageStandard="17" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="qVSXRs" name="SynthVR-Native">
