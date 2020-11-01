@@ -69,7 +69,7 @@ void MultiModeLadderFilter::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         // Run first frequency modulator
-        currentFrequency = calculateFrequencyModulation(
+        currentFrequency = ParameterUtils::calculateModulationFrequency(
             smoothedFrequencyParam.getNextValue(),
             buffer.getSample(frequencyAInputChannel, sample),
             *frequencyModulationAAmountParam,
@@ -77,7 +77,7 @@ void MultiModeLadderFilter::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
             maxFrequency);
 
         // Add second frequency modulator
-        currentFrequency = calculateFrequencyModulation(
+        currentFrequency = ParameterUtils::calculateModulationFrequency(
             currentFrequency,
             buffer.getSample(frequencyBInputChannel, sample),
             *frequencyModulationBAmountParam,
@@ -88,7 +88,7 @@ void MultiModeLadderFilter::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
         this->filterProcessor.setResonance(smoothedResonanceParam.getNextValue());
         this->filterProcessor.setDrive(*driveParam);
 
-        currentMix = calculateMixModulation(
+        currentMix = ParameterUtils::calculateModulationMultiply(
             smoothedMixParam.getNextValue(),
             buffer.getSample(mixInputChannel, sample),
             *mixModulationAmountParam,
@@ -103,14 +103,4 @@ void MultiModeLadderFilter::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
 
     // Set display
     *frequencyDisplay = currentFrequency;
-}
-
-float MultiModeLadderFilter::calculateMixModulation(float originalValue, float modulationValue, float modulationAmount, float clampLow, float clampHigh)
-{
-    return ParameterUtils::clamp(originalValue + (originalValue * (modulationValue * modulationAmount)), clampLow, clampHigh);
-}
-
-float MultiModeLadderFilter::calculateFrequencyModulation(float originalValue, float modulationValue, float modulationAmount, float clampLow, float clampHigh)
-{
-    return ParameterUtils::clamp(originalValue + (originalValue * std::pow(2.0f, 5.0f * modulationValue * modulationAmount) - originalValue), clampLow, clampHigh);
 }

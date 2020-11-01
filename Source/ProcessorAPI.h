@@ -55,4 +55,5 @@ extern "C"
     DLLExport void GetStateInformationJSON(BaseProcessor* processor, char* destinationString, int stringLength);
     DLLExport void SetStateInformationJSON(BaseProcessor* processor, char* jsonString);
     DLLExport void SetFloatArrayData(BaseProcessor* processor, float* data, int length, int index);
+    DLLExport void SetChannelConnected(BaseProcessor* processor, int channel, bool isInput, bool isConnected);
 }

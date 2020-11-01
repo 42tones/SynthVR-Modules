@@ -108,7 +108,7 @@ void WavetableVCOProcessor::calculateCrossfade(float mix)
     mix = ParameterUtils::clamp(mix, 0.0f, 1.0f);
     *totalWaveMixDisplay = mix;
 
-    oscATargetGain = dsp::FastMathApproximations::cos(mix * M_PI_2);
+    oscATargetGain = dsp::FastMathApproximations::cos(mix * MathConstants<float>::halfPi);
     oscBTargetGain = 1.0f - oscATargetGain;
 }
 

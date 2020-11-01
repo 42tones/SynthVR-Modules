@@ -10,16 +10,18 @@
               file="Source/ParameterUtils.h"/>
       </GROUP>
       <GROUP id="{42F2B79D-7F3F-EA2C-373B-636993A10964}" name="Includes">
+        <GROUP id="{7B63226F-4D78-20D8-7FE2-21BCE1ADD164}" name="SingleSampleLadderFilter">
+          <FILE id="ehXACs" name="SingleSampleLadderFilter.cpp" compile="1" resource="0"
+                file="Source/SingleSampleLadderFilter.cpp"/>
+          <FILE id="l2nYIY" name="SingleSampleLadderFilter.h" compile="0" resource="0"
+                file="Source/SingleSampleLadderFilter.h"/>
+        </GROUP>
         <GROUP id="{A2BB186D-579E-DB1A-6397-CC1E9E511862}" name="WaveTableOsc">
           <FILE id="LhphQi" name="WaveTableOsc.h" compile="0" resource="0" file="Source/WaveTableOsc.h"/>
           <FILE id="x0m1bU" name="WaveUtils.cpp" compile="1" resource="0" file="Source/WaveUtils.cpp"/>
           <FILE id="kjWhbc" name="WaveUtils.h" compile="0" resource="0" file="Source/WaveUtils.h"/>
         </GROUP>
         <FILE id="xcf5Hz" name="json.hpp" compile="0" resource="0" file="Source/json.hpp"/>
-        <FILE id="ehXACs" name="SingleSampleLadderFilter.cpp" compile="1" resource="0"
-              file="Source/SingleSampleLadderFilter.cpp"/>
-        <FILE id="l2nYIY" name="SingleSampleLadderFilter.h" compile="0" resource="0"
-              file="Source/SingleSampleLadderFilter.h"/>
       </GROUP>
       <GROUP id="{A89DF260-FFFC-6B16-A58B-C5F529690808}" name="API">
         <FILE id="Zhg5m5" name="ProcessorAPI.cpp" compile="1" resource="0"
@@ -30,6 +32,12 @@
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
         <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
+          <GROUP id="{8BA84226-EDB2-F8DF-2820-1370F2C7A4CB}" name="Echo">
+            <FILE id="D5JdrY" name="DelayProcessor.cpp" compile="1" resource="0"
+                  file="Source/DelayProcessor.cpp"/>
+            <FILE id="Lng6Ot" name="DelayProcessor.h" compile="0" resource="0"
+                  file="Source/DelayProcessor.h"/>
+          </GROUP>
           <GROUP id="{D5643F66-793C-5FBA-C74F-6DA3610EB981}" name="Space">
             <FILE id="YB4iFy" name="FreeverbProcessor.cpp" compile="1" resource="0"
                   file="Source/FreeverbProcessor.cpp"/>
@@ -143,9 +151,9 @@
     </ANDROIDSTUDIO>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="../SynthVR/SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
                        useRuntimeLibDLL="0"/>
-        <CONFIGURATION isDebug="0" name="Release" binaryPath="../SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="../SynthVR/SynthVR-Unity/Assets/Plugins/Windows/SynthVR-Native"
                        useRuntimeLibDLL="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
