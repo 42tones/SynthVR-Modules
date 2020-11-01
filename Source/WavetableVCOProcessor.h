@@ -6,9 +6,6 @@
 
 #pragma once
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 #include "JuceHeader.h"
 #include "BaseProcessor.h"
 #include "ParameterUtils.h"

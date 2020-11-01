@@ -62,6 +62,9 @@ void MixerTestProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
     for (int channel = 0; channel < numChannels; channel++)
     {
+        if (!isInputConnected[channel])
+            continue;
+
         channelGainProcessors[channel].setGainLinear(getChannelGain(channel));
         tempPan = getChannelPan(channel);
 
@@ -78,6 +81,9 @@ void MixerTestProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     masterGainProcessor.setGainLinear(*masterGainAmount);
     for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++)
     {
+        if (!isOutputConnected[channel])
+            continue; 
+
         for (int sample = 0; sample < outputBuffer.getNumSamples(); sample++)
         {
             // Do gain and add it directly to output buffer

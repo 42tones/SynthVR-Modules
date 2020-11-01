@@ -26,6 +26,7 @@
 #include "WavetableVCOProcessor.h"
 #include "MultiModeLadderFilter.h"
 #include "FreeverbProcessor.h"
+#include "DelayProcessor.h"
 
 using Node = AudioProcessorGraph::Node;
 using NodeID = AudioProcessorGraph::NodeID;
@@ -48,7 +49,8 @@ namespace synthvr
             CVQuantizerTestProcessor = 10,
             WavetableVCOProcessor = 11,
             MultiModeLadderFilter = 12,
-            FreeverbProcessor = 13
+            FreeverbProcessor = 13,
+            DelayProcessor = 14
         };
         
         enum ParameterType { Continuous = 0, Discrete = 1, Boolean = 2 };
@@ -98,6 +100,9 @@ namespace synthvr
 
                 case ProcessorID::FreeverbProcessor:
                     return reinterpret_cast<BaseProcessor*>(new class FreeverbProcessor());
+
+                case ProcessorID::DelayProcessor:
+                    return reinterpret_cast<BaseProcessor*>(new class DelayProcessor());
 
                 default:
                     return reinterpret_cast<BaseProcessor *>(new class SingleChannelTestProcessor());

@@ -41,22 +41,31 @@ void FreeverbProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &)
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         // Update audio rate reverb params
-        reverbParams.roomSize = calculateModulation(
-            *roomSizeParam, 
-            buffer.getSample(roomSizeInputChannel, sample), 
-            *roomSizeModulationAmountParam);
+        if (isInputConnected[roomSizeInputChannel])
+            reverbParams.roomSize = ParameterUtils::calculateModulationLinear(
+                *roomSizeParam,
+                buffer.getSample(roomSizeInputChannel, sample),
+                *roomSizeModulationAmountParam);
+        else
+            reverbParams.roomSize = *roomSizeParam;
 
-        *freezeDisplay = calculateModulation(
-            *freezeParam,
-            buffer.getSample(freezeInputChannel, sample),
-            1.0f);
+        if (isInputConnected[freezeInputChannel])
+            *freezeDisplay = ParameterUtils::calculateModulationLinear(
+                *freezeParam,
+                buffer.getSample(freezeInputChannel, sample),
+                1.0f);
+        else
+            *freezeDisplay = *freezeParam;
 
         reverbParams.freezeMode = *freezeDisplay;
 
-        mixValue = calculateModulation(
-            *mixParam,
-            buffer.getSample(mixInputChannel, sample),
-            *mixModulationAmountParam);
+        if (isInputConnected[mixInputChannel])
+            mixValue = ParameterUtils::calculateModulationLinear(
+                *mixParam,
+                buffer.getSample(mixInputChannel, sample),
+                *mixModulationAmountParam);
+        else
+            mixValue = *mixParam;
 
         reverbParams.wetLevel = mixValue;
         reverbParams.dryLevel = 1.0f - mixValue;
@@ -65,9 +74,4 @@ void FreeverbProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &)
         // Run stereo reverb
         reverb.processStereo(&buffer.getWritePointer(0)[sample], &buffer.getWritePointer(1)[sample], 1);
     }
-}
-
-float FreeverbProcessor::calculateModulation(float originalValue, float modulationValue, float modulationAmount, float clampLow, float clampHigh)
-{
-    return ParameterUtils::clamp(originalValue + (modulationValue * modulationAmount), clampLow, clampHigh);
 }
