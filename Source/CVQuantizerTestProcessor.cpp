@@ -21,6 +21,9 @@ void CVQuantizerTestProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuff
 {
     for (int channel = 0; channel < buffer.getNumChannels(); channel++)
     {
+        if (!isInputConnected[channel] || !isOutputConnected[channel])
+            continue;
+
         for (int sample = 0; sample < buffer.getNumSamples(); sample++)
         {
             // Store sign of the incoming sample, used at the end

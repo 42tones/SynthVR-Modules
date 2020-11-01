@@ -41,22 +41,31 @@ void FreeverbProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &)
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         // Update audio rate reverb params
-        reverbParams.roomSize = ParameterUtils::calculateModulationLinear(
-            *roomSizeParam, 
-            buffer.getSample(roomSizeInputChannel, sample), 
-            *roomSizeModulationAmountParam);
+        if (isInputConnected[roomSizeInputChannel])
+            reverbParams.roomSize = ParameterUtils::calculateModulationLinear(
+                *roomSizeParam,
+                buffer.getSample(roomSizeInputChannel, sample),
+                *roomSizeModulationAmountParam);
+        else
+            reverbParams.roomSize = *roomSizeParam;
 
-        *freezeDisplay = ParameterUtils::calculateModulationLinear(
-            *freezeParam,
-            buffer.getSample(freezeInputChannel, sample),
-            1.0f);
+        if (isInputConnected[freezeInputChannel])
+            *freezeDisplay = ParameterUtils::calculateModulationLinear(
+                *freezeParam,
+                buffer.getSample(freezeInputChannel, sample),
+                1.0f);
+        else
+            *freezeDisplay = *freezeParam;
 
         reverbParams.freezeMode = *freezeDisplay;
 
-        mixValue = ParameterUtils::calculateModulationLinear(
-            *mixParam,
-            buffer.getSample(mixInputChannel, sample),
-            *mixModulationAmountParam);
+        if (isInputConnected[mixInputChannel])
+            mixValue = ParameterUtils::calculateModulationLinear(
+                *mixParam,
+                buffer.getSample(mixInputChannel, sample),
+                *mixModulationAmountParam);
+        else
+            mixValue = *mixParam;
 
         reverbParams.wetLevel = mixValue;
         reverbParams.dryLevel = 1.0f - mixValue;

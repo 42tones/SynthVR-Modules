@@ -69,8 +69,12 @@ void WavetableVCOProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
         );
 
         // Process oscillators and write them to buffer
-        currentOscASample = oscA->process();
-        currentOscBSample = oscB->process();
+        if (isOutputConnected[oscAOutputChannel] || isOutputConnected[mixOutputChannel])
+            currentOscASample = oscA->process();
+
+        if (isOutputConnected[oscBOutputChannel] || isOutputConnected[mixOutputChannel])
+            currentOscBSample = oscB->process();
+
         buffer.setSample(oscAOutputChannel, sample, masterGain.processSample(currentOscASample));
         buffer.setSample(oscBOutputChannel, sample, masterGain.processSample(currentOscBSample));
 

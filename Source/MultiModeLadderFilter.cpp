@@ -69,31 +69,38 @@ void MultiModeLadderFilter::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         // Run first frequency modulator
-        currentFrequency = ParameterUtils::calculateModulationFrequency(
-            smoothedFrequencyParam.getNextValue(),
-            buffer.getSample(frequencyAInputChannel, sample),
-            *frequencyModulationAAmountParam,
-            minFrequency,
-            maxFrequency);
+        if (isInputConnected[frequencyAInputChannel])
+            currentFrequency = ParameterUtils::calculateModulationFrequency(
+                smoothedFrequencyParam.getNextValue(),
+                buffer.getSample(frequencyAInputChannel, sample),
+                *frequencyModulationAAmountParam,
+                minFrequency,
+                maxFrequency);
+        else
+            currentFrequency = smoothedFrequencyParam.getNextValue();
 
         // Add second frequency modulator
-        currentFrequency = ParameterUtils::calculateModulationFrequency(
-            currentFrequency,
-            buffer.getSample(frequencyBInputChannel, sample),
-            *frequencyModulationBAmountParam,
-            minFrequency,
-            maxFrequency);
+        if (isInputConnected[frequencyBInputChannel])
+            currentFrequency = ParameterUtils::calculateModulationFrequency(
+                currentFrequency,
+                buffer.getSample(frequencyBInputChannel, sample),
+                *frequencyModulationBAmountParam,
+                minFrequency,
+                maxFrequency);
 
         this->filterProcessor.setCutoffFrequencyHz(currentFrequency);
         this->filterProcessor.setResonance(smoothedResonanceParam.getNextValue());
         this->filterProcessor.setDrive(*driveParam);
 
-        currentMix = ParameterUtils::calculateModulationMultiply(
-            smoothedMixParam.getNextValue(),
-            buffer.getSample(mixInputChannel, sample),
-            *mixModulationAmountParam,
-            0.0f,
-            1.0f);
+        if (isInputConnected[mixInputChannel])
+            currentMix = ParameterUtils::calculateModulationMultiply(
+                smoothedMixParam.getNextValue(),
+                buffer.getSample(mixInputChannel, sample),
+                *mixModulationAmountParam,
+                0.0f,
+                1.0f);
+        else
+            currentMix = smoothedMixParam.getNextValue();
 
         currentFilterOutput = this->filterProcessor.processSample(buffer.getSample(inputChannel, sample), 0);
         buffer.setSample(outputChannel, 
