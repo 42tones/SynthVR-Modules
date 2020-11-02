@@ -31,6 +31,14 @@
               file="Source/ProcessorAPIUtilities.h"/>
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
+        <GROUP id="{8A8A2167-2F46-A5BE-4568-5D7A62CD8337}" name="Just">
+          <GROUP id="{249459DC-38A1-6B61-7455-54B67EC96879}" name="Noise">
+            <FILE id="OUxTT3" name="ColoredNoiseProcessor.cpp" compile="1" resource="0"
+                  file="Source/ColoredNoiseProcessor.cpp"/>
+            <FILE id="lnZ6Pb" name="ColoredNoiseProcessor.h" compile="0" resource="0"
+                  file="Source/ColoredNoiseProcessor.h"/>
+          </GROUP>
+        </GROUP>
         <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
           <GROUP id="{8BA84226-EDB2-F8DF-2820-1370F2C7A4CB}" name="Echo">
             <FILE id="D5JdrY" name="DelayProcessor.cpp" compile="1" resource="0"
