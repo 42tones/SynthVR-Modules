@@ -78,6 +78,11 @@ public:
             mPhasor -= 1.0;
     }
 
+    void resetPhase()
+    {
+        mPhasor = 0;
+    }
+
     //
     // process: Update phase and get output
     //

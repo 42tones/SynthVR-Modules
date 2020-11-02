@@ -32,6 +32,12 @@
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
         <GROUP id="{8A8A2167-2F46-A5BE-4568-5D7A62CD8337}" name="Just">
+          <GROUP id="{7D988379-F4DC-435B-FC78-4E672CC98202}" name="LFO">
+            <FILE id="k6BBzn" name="WavetableVCLFOProcessor.cpp" compile="1" resource="0"
+                  file="Source/WavetableVCLFOProcessor.cpp"/>
+            <FILE id="HDC5FV" name="WavetableVCLFOProcessor.h" compile="0" resource="0"
+                  file="Source/WavetableVCLFOProcessor.h"/>
+          </GROUP>
           <GROUP id="{249459DC-38A1-6B61-7455-54B67EC96879}" name="Noise">
             <FILE id="OUxTT3" name="ColoredNoiseProcessor.cpp" compile="1" resource="0"
                   file="Source/ColoredNoiseProcessor.cpp"/>
