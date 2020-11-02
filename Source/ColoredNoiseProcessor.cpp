@@ -23,11 +23,17 @@ void ColoredNoiseProcessor::prepareToPlay(double sampleRate, int maximumExpected
     this->sampleRate = sampleRate;
 
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
-    this->highFilter.prepare(processSpec);
-    this->highFilter.reset();
-    this->lowFilter.prepare(processSpec);
-    this->lowFilter.reset();
+    this->highShelfFilter.prepare(processSpec);
+    this->highShelfFilter.reset();
+    this->lowShelfFilter.prepare(processSpec);
+    this->lowShelfFilter.reset();
     recalculateFilterCoefficients(*colorParam);
+
+    this->lowCutFilter.prepare(processSpec);
+    this->lowCutFilter.reset();
+    this->lowCutFilter.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(
+        sampleRate,
+        lowCutFrequency);
 
     smoothedLevel.reset(sampleRate, defaultParameterSmoothing);
     smoothedLevel.setCurrentAndTargetValue(*levelParam);
@@ -63,13 +69,13 @@ void ColoredNoiseProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
         buffer.setSample(
             whiteNoiseOutputChannel, 
             sample,
-            randomGenerator.nextFloat() * currentLevel
+            lowCutFilter.processSample(randomGenerator.nextFloat() * currentLevel)
         );
 
         // Make colored noise
         currentColoredNoise = buffer.getSample(whiteNoiseOutputChannel, sample);
-        currentColoredNoise = highFilter.processSample(currentColoredNoise);
-        currentColoredNoise = lowFilter.processSample(currentColoredNoise);
+        currentColoredNoise = highShelfFilter.processSample(currentColoredNoise);
+        currentColoredNoise = lowShelfFilter.processSample(currentColoredNoise);
         buffer.setSample(coloredNoiseOutputChannel, 
             sample, 
             currentColoredNoise);
@@ -80,13 +86,13 @@ void synthvr::ColoredNoiseProcessor::recalculateFilterCoefficients(float colorVa
 {
     colorValue *= maxColorAmount;
 
-    this->lowFilter.coefficients = dsp::IIR::Coefficients<float>::makeLowShelf(
+    this->lowShelfFilter.coefficients = dsp::IIR::Coefficients<float>::makeLowShelf(
         sampleRate,
         defaultCenterFrequency,
         defaultColorQFactor,
         1.0f - colorValue);
 
-    this->highFilter.coefficients = dsp::IIR::Coefficients<float>::makeHighShelf(
+    this->highShelfFilter.coefficients = dsp::IIR::Coefficients<float>::makeHighShelf(
         sampleRate,
         defaultCenterFrequency,
         defaultColorQFactor,

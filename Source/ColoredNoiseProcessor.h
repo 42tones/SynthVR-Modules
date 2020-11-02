@@ -32,14 +32,16 @@ namespace synthvr
 
         // DSP elements
         Random randomGenerator;
-        dsp::IIR::Filter<float> highFilter;
-        dsp::IIR::Filter<float> lowFilter;
+        dsp::IIR::Filter<float> highShelfFilter;
+        dsp::IIR::Filter<float> lowShelfFilter;
+        dsp::IIR::Filter<float> lowCutFilter;
 
         // Settings / defaults
         float defaultCenterFrequency = 1000.0f;
         float defaultColorQFactor = 0.1f;
         float maxColorAmount = 0.95f;
         float defaultParameterSmoothing = 0.1f;
+        float lowCutFrequency = 80.0f;
 
         // Current state
         double sampleRate = 1000.0f;
