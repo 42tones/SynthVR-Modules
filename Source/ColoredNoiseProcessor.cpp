@@ -12,7 +12,7 @@ ColoredNoiseProcessor::ColoredNoiseProcessor() : BaseProcessor(BusesProperties()
     .withInput("Inputs", AudioChannelSet::discreteChannels(2))
     .withOutput("Output", AudioChannelSet::discreteChannels(2)))
 {
-    addParameter(colorParam = new AudioParameterFloat("color", "Color", -1.0f, 1.0f, -0.2f));
+    addParameter(colorParam = new AudioParameterFloat("color", "Color", -1.0f, 1.0f, -0.6f));
     addParameter(levelParam = new AudioParameterFloat("level", "Level", 0.0f, 1.0f, 0.6f));
 }
 
@@ -29,38 +29,41 @@ void ColoredNoiseProcessor::prepareToPlay(double sampleRate, int maximumExpected
     this->lowFilter.reset();
     recalculateFilterCoefficients(*colorParam);
 
-    smoothedLevel.reset(sampleRate, defaultLevelSmoothing);
+    smoothedLevel.reset(sampleRate, defaultParameterSmoothing);
     smoothedLevel.setCurrentAndTargetValue(*levelParam);
 }
 
 void ColoredNoiseProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 {
-    // Calculate color once per block if input not connected
-    if (!isInputConnected[colorInputChannel])
-        recalculateFilterCoefficients(*colorParam);
+    smoothedColor.setTargetValue(*colorParam);
+    smoothedLevel.setTargetValue(*levelParam);
 
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
-        // Calculate color coefficients
+        // Calculate color
+        currentColor = smoothedColor.getNextValue();
         if (isInputConnected[colorInputChannel])
-            recalculateFilterCoefficients(*colorParam + buffer.getSample(colorInputChannel, sample));
+            currentColor = ParameterUtils::calculateModulationLinear(
+                currentColor,
+                1.0f,
+                buffer.getSample(colorInputChannel, sample),
+                -1.0f);
 
-        // Calculate target level
+        recalculateFilterCoefficients(currentColor);
+
+        // Calculate level
+        currentLevel = smoothedLevel.getNextValue();
         if (isInputConnected[levelInputChannel])
-            currentTargetLevel = ParameterUtils::calculateModulationLinear(
-                *levelParam,
+            currentLevel = ParameterUtils::calculateModulationLinear(
+                currentLevel,
                 1.0f,
                 buffer.getSample(levelInputChannel, sample));
-        else
-            currentTargetLevel = *levelParam;
-
-        smoothedLevel.setTargetValue(currentTargetLevel);
 
         // Make white noise
         buffer.setSample(
             whiteNoiseOutputChannel, 
             sample,
-            randomGenerator.nextFloat() * smoothedLevel.getNextValue()
+            randomGenerator.nextFloat() * currentLevel
         );
 
         // Make colored noise
@@ -75,17 +78,17 @@ void ColoredNoiseProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&
 
 void synthvr::ColoredNoiseProcessor::recalculateFilterCoefficients(float colorValue)
 {
-    colorValue = ParameterUtils::clamp(colorValue, 0.0f, 1.0f);
+    colorValue *= maxColorAmount;
 
     this->lowFilter.coefficients = dsp::IIR::Coefficients<float>::makeLowShelf(
         sampleRate,
         defaultCenterFrequency,
         defaultColorQFactor,
-        1.0f - colorValue * defaultColorFactor);
+        1.0f - colorValue);
 
     this->highFilter.coefficients = dsp::IIR::Coefficients<float>::makeHighShelf(
         sampleRate,
         defaultCenterFrequency,
         defaultColorQFactor,
-        1.0f + colorValue * defaultColorFactor);
+        1.0f + colorValue);
 }

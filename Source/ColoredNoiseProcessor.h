@@ -38,12 +38,16 @@ namespace synthvr
         // Settings / defaults
         float defaultCenterFrequency = 1000.0f;
         float defaultColorQFactor = 0.1f;
-        float defaultColorFactor = 0.8f;
-        float defaultLevelSmoothing = 0.1f;
-        double sampleRate = 1000.0f;
+        float maxColorAmount = 0.95f;
+        float defaultParameterSmoothing = 0.1f;
 
+        // Current state
+        double sampleRate = 1000.0f;
         float currentColoredNoise = 0.0f;
-        float currentTargetLevel = 0.0f;
+
+        float currentColor = 0.0f;
+        float currentLevel = 0.0f;
+        SmoothedValue<float> smoothedColor;
         SmoothedValue<float> smoothedLevel;
 
         // Channel name helpers
