@@ -9,11 +9,11 @@
 using namespace synthvr;
 
 ColoredNoiseProcessor::ColoredNoiseProcessor() : BaseProcessor(BusesProperties()
-    .withInput("Inputs", AudioChannelSet::discreteChannels(1))
+    .withInput("Inputs", AudioChannelSet::discreteChannels(2))
     .withOutput("Output", AudioChannelSet::discreteChannels(2)))
 {
     addParameter(colorParam = new AudioParameterFloat("color", "Color", -1.0f, 1.0f, -0.2f));
-    addParameter(colorParam = new AudioParameterFloat("level", "Level", 0.0f, 1.0f, 0.6f));
+    addParameter(levelParam = new AudioParameterFloat("level", "Level", 0.0f, 1.0f, 0.6f));
 }
 
 ColoredNoiseProcessor::~ColoredNoiseProcessor() {}
