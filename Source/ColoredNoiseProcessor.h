@@ -41,7 +41,7 @@ namespace synthvr
         float defaultColorQFactor = 0.1f;
         float maxColorAmount = 0.95f;
         float defaultParameterSmoothing = 0.1f;
-        float lowCutFrequency = 80.0f;
+        float lowCutFrequency = 60.0f;
 
         // Current state
         double sampleRate = 1000.0f;
