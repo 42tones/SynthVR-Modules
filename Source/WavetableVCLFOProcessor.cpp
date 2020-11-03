@@ -13,8 +13,9 @@ WavetableVCLFOProcessor::WavetableVCLFOProcessor() : BaseProcessor(BusesProperti
     .withOutput("Output", AudioChannelSet::discreteChannels(1)))
 {
     // Parameters
-    addParameter(frequencyParam = new AudioParameterFloat("frequency", "Frequency", 0.015f, 8.0f, 1.0f));
+    addParameter(frequencyParam = new AudioParameterFloat("frequency", "Frequency", 0.03f, 10.0f, 1.0f));
     addParameter(fmAmountParam = new AudioParameterFloat("fmAmount", "FMAmount", -1.0f, 1.0f, 0.2f));
+    addParameter(oscWave = new AudioParameterFloat("oscWave", "OscillatorWaveMemory", 0.0f, 1.0f, 0.0f));
     addParameter(oscOutputDisplay = new AudioParameterFloat("oscOutputDisplay", "Output", 0.0f, 1.0f, 0.0f));
 
     frequencyParam->range.setSkewForCentre(1.0f);

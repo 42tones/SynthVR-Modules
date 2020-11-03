@@ -33,6 +33,7 @@ namespace synthvr
         // Tuning params
         AudioParameterFloat* frequencyParam;
         AudioParameterFloat* fmAmountParam;
+        AudioParameterFloat* oscWave;
         AudioParameterFloat* oscOutputDisplay;
 
         // DSP units
