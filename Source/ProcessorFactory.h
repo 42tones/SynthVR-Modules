@@ -12,6 +12,7 @@
 
 #include "JuceHeader.h"
 
+// LAB & test modules
 #include "SingleChannelTestProcessor.h"
 #include "MultiChannelTestProcessor.h"
 #include "OscillatorTestProcessor.h"
@@ -23,10 +24,14 @@
 #include "MixerTestProcessor.h"
 #include "VelocityTrackingProcessor.h"
 #include "CVQuantizerTestProcessor.h"
+
+// Release ready modules
 #include "WavetableVCOProcessor.h"
 #include "MultiModeLadderFilter.h"
 #include "FreeverbProcessor.h"
 #include "DelayProcessor.h"
+#include "ColoredNoiseProcessor.h"
+#include "WavetableVCLFOProcessor.h"
 
 using Node = AudioProcessorGraph::Node;
 using NodeID = AudioProcessorGraph::NodeID;
@@ -50,7 +55,9 @@ namespace synthvr
             WavetableVCOProcessor = 11,
             MultiModeLadderFilter = 12,
             FreeverbProcessor = 13,
-            DelayProcessor = 14
+            DelayProcessor = 14,
+            ColoredNoiseProcessor = 15,
+            WavetableVCLFOProcessor = 16
         };
         
         enum ParameterType { Continuous = 0, Discrete = 1, Boolean = 2 };
@@ -103,6 +110,12 @@ namespace synthvr
 
                 case ProcessorID::DelayProcessor:
                     return reinterpret_cast<BaseProcessor*>(new class DelayProcessor());
+
+                case ProcessorID::ColoredNoiseProcessor:
+                    return reinterpret_cast<BaseProcessor*>(new class ColoredNoiseProcessor());
+
+                case ProcessorID::WavetableVCLFOProcessor:
+                    return reinterpret_cast<BaseProcessor*>(new class WavetableVCLFOProcessor());
 
                 default:
                     return reinterpret_cast<BaseProcessor *>(new class SingleChannelTestProcessor());

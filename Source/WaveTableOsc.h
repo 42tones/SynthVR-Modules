@@ -78,12 +78,17 @@ public:
             mPhasor -= 1.0;
     }
 
+    void resetPhase()
+    {
+        mPhasor = 0;
+    }
+
     //
     // process: Update phase and get output
     //
     float process(void) {
         updatePhase();
-        return getOutput();
+        return getOutput() * -1.0f;
     }
 
     //

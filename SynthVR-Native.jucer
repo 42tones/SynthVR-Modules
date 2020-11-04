@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="PiEjaB" name="SynthVR-Native" projectType="dll" version="0.1.0"
+<JUCERPROJECT id="PiEjaB" name="SynthVR-Native" projectType="dll" version="0.2.0"
               companyName="42tones" companyWebsite="www.42tones.com" companyEmail="hello@42tones.com"
               cppLanguageStandard="17" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="qVSXRs" name="SynthVR-Native">
@@ -31,6 +31,20 @@
               file="Source/ProcessorAPIUtilities.h"/>
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
+        <GROUP id="{8A8A2167-2F46-A5BE-4568-5D7A62CD8337}" name="Just">
+          <GROUP id="{7D988379-F4DC-435B-FC78-4E672CC98202}" name="LFO">
+            <FILE id="k6BBzn" name="WavetableVCLFOProcessor.cpp" compile="1" resource="0"
+                  file="Source/WavetableVCLFOProcessor.cpp"/>
+            <FILE id="HDC5FV" name="WavetableVCLFOProcessor.h" compile="0" resource="0"
+                  file="Source/WavetableVCLFOProcessor.h"/>
+          </GROUP>
+          <GROUP id="{249459DC-38A1-6B61-7455-54B67EC96879}" name="Noise">
+            <FILE id="OUxTT3" name="ColoredNoiseProcessor.cpp" compile="1" resource="0"
+                  file="Source/ColoredNoiseProcessor.cpp"/>
+            <FILE id="lnZ6Pb" name="ColoredNoiseProcessor.h" compile="0" resource="0"
+                  file="Source/ColoredNoiseProcessor.h"/>
+          </GROUP>
+        </GROUP>
         <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
           <GROUP id="{8BA84226-EDB2-F8DF-2820-1370F2C7A4CB}" name="Echo">
             <FILE id="D5JdrY" name="DelayProcessor.cpp" compile="1" resource="0"
