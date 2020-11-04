@@ -15,8 +15,9 @@ WavetableVCLFOProcessor::WavetableVCLFOProcessor() : BaseProcessor(BusesProperti
     // Parameters
     addParameter(frequencyParam = new AudioParameterFloat("frequency", "Frequency", 0.03f, 10.0f, 1.0f));
     addParameter(fmAmountParam = new AudioParameterFloat("fmAmount", "FMAmount", -1.0f, 1.0f, 0.2f));
-    addParameter(oscWave = new AudioParameterFloat("oscWave", "OscillatorWaveMemory", 0.0f, 1.0f, 0.0f));
-    addParameter(oscOutputDisplay = new AudioParameterFloat("oscOutputDisplay", "Output", 0.0f, 1.0f, 0.0f));
+    addParameter(oscWaveParam = new AudioParameterFloat("oscWave", "OscillatorWaveMemory", 0.0f, 1.0f, 0.0f));
+    addParameter(bipolarParam = new AudioParameterBool("bipolar", "Bipolar", false));
+    addParameter(oscOutputDisplayParam = new AudioParameterFloat("oscOutputDisplay", "Output", 0.0f, 1.0f, 0.0f));
 
     frequencyParam->range.setSkewForCentre(1.0f);
 
@@ -68,10 +69,15 @@ void WavetableVCLFOProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
         }
 
         osc->setFrequency(currentFrequency, currentSampleRate);
-        buffer.setSample(outputChannel, sample, osc->process());
+        oscillatorOutput = osc->process();
+
+        if (!*bipolarParam)
+            oscillatorOutput = oscillatorOutput / 2.0f + 0.5f;
+
+        buffer.setSample(outputChannel, sample, oscillatorOutput);
     }
 
-    *oscOutputDisplay = buffer.getRMSLevel(outputChannel, 0, buffer.getNumSamples());
+    *oscOutputDisplayParam = std::abs(oscillatorOutput);
 }
 
 

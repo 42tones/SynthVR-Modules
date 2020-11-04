@@ -88,7 +88,7 @@ public:
     //
     float process(void) {
         updatePhase();
-        return getOutput();
+        return getOutput() * -1.0f;
     }
 
     //

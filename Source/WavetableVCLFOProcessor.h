@@ -33,8 +33,9 @@ namespace synthvr
         // Tuning params
         AudioParameterFloat* frequencyParam;
         AudioParameterFloat* fmAmountParam;
-        AudioParameterFloat* oscWave;
-        AudioParameterFloat* oscOutputDisplay;
+        AudioParameterFloat* oscWaveParam;
+        AudioParameterBool* bipolarParam;
+        AudioParameterFloat* oscOutputDisplayParam;
 
         // DSP units
         std::unique_ptr<WaveTableOsc> osc = std::make_unique<WaveTableOsc>();
@@ -48,6 +49,7 @@ namespace synthvr
         SmoothedValue<float> smoothedFrequency;
         float currentResetValue = 0.0f;
         float previousResetValue = 0.0f;
+        float oscillatorOutput = 0.0f;
         bool waveTableShouldBeRecomputed = false;
 
         // Channel setup enum
