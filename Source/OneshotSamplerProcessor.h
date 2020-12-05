@@ -58,7 +58,6 @@ namespace synthvr
         SmoothedValue<float> smoothedVolume;
         float currentVolume = 0.75f;
         SmoothedValue<float> transientShaper;
-        float defaultTransientSpeed = 0.08f;
 
         // Channel setup enum
         enum

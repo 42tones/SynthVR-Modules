@@ -38,13 +38,13 @@ void OneshotSamplerProcessor::prepareToPlay(double sampleRate, int maximumExpect
     currentStartPosition = *startParam;
     currentLength = *lengthParam;
 
-    smoothedPitch.reset(currentSampleRate, 0.05f);
+    smoothedPitch.reset(currentSampleRate, 0.01f);
     smoothedPitch.setCurrentAndTargetValue(*pitchParam);
 
     smoothedVolume.reset(currentSampleRate, 0.1f);
     smoothedVolume.setCurrentAndTargetValue(*volumeParam);
 
-    transientShaper.reset(currentSampleRate, defaultTransientSpeed);
+    transientShaper.reset(currentSampleRate, 0.07);
     transientShaper.setCurrentAndTargetValue(1.0f);
 }
 
