@@ -130,18 +130,21 @@ void synthvr::OneshotSamplerProcessor::handlePitch(juce::AudioSampleBuffer& buff
 
 void synthvr::OneshotSamplerProcessor::handlePlayback(juce::AudioSampleBuffer& buffer, int sample)
 {
+    if (isInputConnected[volumeInputChannel])
+        currentVolume = ParameterUtils::calculateModulationLinear(
+            smoothedVolume.getNextValue(),
+            buffer.getSample(volumeInputChannel, sample),
+            1.0f,
+            0.0f,
+            2.0f);
+    else
+        currentVolume = smoothedVolume.getNextValue();
+
     currentVolume = ParameterUtils::clamp(
-        smoothedVolume.getNextValue() * transientShaper.getNextValue(), 
+        currentVolume * transientShaper.getNextValue(),
         0.0f, 
         2.0f);
 
-    if (isInputConnected[volumeInputChannel])
-        currentVolume = ParameterUtils::calculateModulationLinear(
-            currentVolume, 
-            buffer.getSample(volumeInputChannel, sample), 
-            1.0f, 
-            0.0f, 
-            2.0f);
 
     if (currentlyPlaying)
     {
