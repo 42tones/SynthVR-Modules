@@ -19,6 +19,16 @@ namespace synthvr
             return std::max(min, std::min(value, max));
         }
 
+        static int clamp(int value, int min, int max)
+        {
+            return std::max(min, std::min(value, max));
+        }
+
+        static float lerp(float a, float b, float f)
+        {
+            return (a * (1.0 - f)) + (b * f);
+        }
+
         static float calculateModulationLinear(float originalValue, float modulationValue, float modulationAmount, float clampLow = 0.0f, float clampHigh = 1.0f)
         {
             return ParameterUtils::clamp(originalValue + (modulationValue * modulationAmount), clampLow, clampHigh);
