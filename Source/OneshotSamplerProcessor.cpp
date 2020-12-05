@@ -9,7 +9,7 @@
 using namespace synthvr;
 
 OneshotSamplerProcessor::OneshotSamplerProcessor() : BaseProcessor(BusesProperties()
-    .withInput("Inputs", AudioChannelSet::discreteChannels(4))
+    .withInput("Inputs", AudioChannelSet::discreteChannels(5))
     .withOutput("Output", AudioChannelSet::discreteChannels(2)))
 {
     // Parameters
@@ -134,6 +134,14 @@ void synthvr::OneshotSamplerProcessor::handlePlayback(juce::AudioSampleBuffer& b
         smoothedVolume.getNextValue() * transientShaper.getNextValue(), 
         0.0f, 
         2.0f);
+
+    if (isInputConnected[volumeInputChannel])
+        currentVolume = ParameterUtils::calculateModulationLinear(
+            currentVolume, 
+            buffer.getSample(volumeInputChannel, sample), 
+            1.0f, 
+            0.0f, 
+            2.0f);
 
     if (currentlyPlaying)
     {

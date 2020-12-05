@@ -67,6 +67,7 @@ namespace synthvr
             startInputChannel = 1,
             lengthInputChannel = 2,
             pitchInputChannel = 3,
+            volumeInputChannel = 4,
             outputChannelLeft = 0,
             outputChannelRight = 1
         };
