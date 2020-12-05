@@ -139,6 +139,9 @@ void synthvr::OneshotSamplerProcessor::handlePlayback(juce::AudioSampleBuffer& b
     {
         currentPosition = getNextPosition(currentPosition, currentPitch, currentStartPosition, currentLength);
         
+        // TODO: Lower volume when close to length to prevent clicking
+        // TODO: Lower volume when close to start to prevent clicking
+
         buffer.setSample(
             outputChannelLeft, 
             sample, 
@@ -154,8 +157,8 @@ void synthvr::OneshotSamplerProcessor::handlePlayback(juce::AudioSampleBuffer& b
     }
     else
     {
-        buffer.setSample(outputChannelLeft, sample, buffer.getSample(outputChannelLeft, std::min(sample - 1, 0) * 0.5f));
-        buffer.setSample(outputChannelRight, sample, buffer.getSample(outputChannelRight, std::min(sample - 1, 0) * 0.5f));
+        buffer.setSample(outputChannelLeft, sample, 0.0f);
+        buffer.setSample(outputChannelRight, sample, 0.0f);
     }
 }
 
