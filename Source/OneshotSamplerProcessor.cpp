@@ -15,11 +15,14 @@ OneshotSamplerProcessor::OneshotSamplerProcessor() : BaseProcessor(BusesProperti
     // Parameters
     addParameter(bankParam = new AudioParameterFloat("bank", "Bank", 0.0f, 1.0f, 0.0f));
     addParameter(programParam = new AudioParameterFloat("program", "Program", 0.0f, 1.0f, 0.0f));
-    addParameter(startParam = new AudioParameterFloat("start", "Start", 0.0f, 0.99f, 0.0f));
-    addParameter(lengthParam = new AudioParameterFloat("length", "Length", 0.01f, 1.0f, 1.0f));
-    addParameter(pitchParam = new AudioParameterFloat("pitch", "Pitch", 0.5f, 2.0f, 1.0f));
+    addParameter(startParam = new AudioParameterFloat("start", "Start", 0.0f, 0.9f, 0.0f));
+    addParameter(lengthParam = new AudioParameterFloat("length", "Length", 0.1f, 1.0f, 1.0f));
+    addParameter(pitchParam = new AudioParameterFloat("pitch", "Pitch", 0.25f, 4.0f, 1.0f));
     addParameter(transientParam = new AudioParameterFloat("transient", "Transient", -1.0f, 1.0f, 0.0f));
+    addParameter(volumeParam = new AudioParameterFloat("volume", "Volume", 0.0f, 1.0f, 0.75f));
     addParameter(triggerParam = new AudioParameterBool("trigger", "Trigger", false));
+
+    pitchParam->range.setSkewForCentre(1.0f);
 
     // Initialize float data with room for 2 channels
     floatArrayData = std::vector<std::vector<float>>(2);
@@ -32,21 +35,32 @@ OneshotSamplerProcessor::~OneshotSamplerProcessor() {}
 void OneshotSamplerProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     currentSampleRate = sampleRate;
+    currentStartPosition = *startParam;
+    currentLength = *lengthParam;
 
-    smoothedPitch.reset(currentSampleRate, 0.1f);
+    smoothedPitch.reset(currentSampleRate, 0.05f);
     smoothedPitch.setCurrentAndTargetValue(*pitchParam);
+
+    smoothedVolume.reset(currentSampleRate, 0.1f);
+    smoothedVolume.setCurrentAndTargetValue(*volumeParam);
+
+    transientShaper.reset(currentSampleRate, defaultTransientSpeed);
+    transientShaper.setCurrentAndTargetValue(1.0f);
 }
 
 void OneshotSamplerProcessor::releaseResources() {}
 
 void OneshotSamplerProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 {
+    smoothedVolume.setTargetValue(*volumeParam);
+
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
-        handleTriggers(buffer, sample);
         handleStartPosition(buffer, sample);
         handleLength(buffer, sample);
         handlePitch(buffer, sample);
+
+        handleTriggers(buffer, sample);
         handlePlayback(buffer, sample);
 
         previouslyTriggered = currentlyTriggered;
@@ -58,9 +72,12 @@ void synthvr::OneshotSamplerProcessor::handleTriggers(juce::AudioSampleBuffer& b
     currentlyTriggered = buffer.getSample(triggerInputChannel, sample) >= 0.5f || *triggerParam;
     if (currentlyTriggered && !previouslyTriggered)
     {
-        currentPosition = *startParam;
+        currentPosition = currentStartPosition;
         currentlyPlaying = true;
         currentIncrement = 1.0f / std::max(floatArrayData[0].size(), floatArrayData[1].size());
+
+        transientShaper.setCurrentAndTargetValue(*transientParam + 1.0f);
+        transientShaper.setTargetValue(1.0f);
     }
 }
 
@@ -73,7 +90,7 @@ void synthvr::OneshotSamplerProcessor::handleStartPosition(juce::AudioSampleBuff
             buffer.getSample(startInputChannel, sample),
             1.0f,
             0.0f,
-            0.99f);
+            0.9f);
     }
     else
         currentStartPosition = *startParam;
@@ -87,7 +104,7 @@ void synthvr::OneshotSamplerProcessor::handleLength(juce::AudioSampleBuffer& buf
             *lengthParam,
             buffer.getSample(lengthInputChannel, sample),
             1.0f,
-            0.01f,
+            0.1f,
             1.0f);
     }
     else
@@ -102,7 +119,7 @@ void synthvr::OneshotSamplerProcessor::handlePitch(juce::AudioSampleBuffer& buff
             ParameterUtils::calculateModulationFrequency(
                 *pitchParam,
                 buffer.getSample(pitchInputChannel, sample),
-                1.0f,
+                0.4f,
                 0.1f,
                 4.0f));
     }
@@ -113,14 +130,32 @@ void synthvr::OneshotSamplerProcessor::handlePitch(juce::AudioSampleBuffer& buff
 
 void synthvr::OneshotSamplerProcessor::handlePlayback(juce::AudioSampleBuffer& buffer, int sample)
 {
+    currentVolume = ParameterUtils::clamp(
+        smoothedVolume.getNextValue() * transientShaper.getNextValue(), 
+        0.0f, 
+        2.0f);
+
     if (currentlyPlaying)
     {
         currentPosition = getNextPosition(currentPosition, currentPitch, currentStartPosition, currentLength);
-        buffer.setSample(outputChannelLeft, sample, getSampleAtPosition(floatArrayData[0], currentPosition));
-        buffer.setSample(outputChannelRight, sample, getSampleAtPosition(floatArrayData[1], currentPosition));
+        
+        buffer.setSample(
+            outputChannelLeft, 
+            sample, 
+            getSampleAtPosition(floatArrayData[0], currentPosition) * currentVolume);
+        
+        buffer.setSample(
+            outputChannelRight, 
+            sample, 
+            getSampleAtPosition(floatArrayData[1], currentPosition) * currentVolume);
 
-        if (currentPosition >= 1.0f || currentStartPosition + currentLength)
+        if (currentPosition >= 1.0f || currentPosition >= (currentStartPosition + currentLength))
             currentlyPlaying = false;
+    }
+    else
+    {
+        buffer.setSample(outputChannelLeft, sample, buffer.getSample(outputChannelLeft, std::min(sample - 1, 0) * 0.5f));
+        buffer.setSample(outputChannelRight, sample, buffer.getSample(outputChannelRight, std::min(sample - 1, 0) * 0.5f));
     }
 }
 
@@ -131,8 +166,7 @@ float OneshotSamplerProcessor::getNextPosition(float currentPos, float pitch, fl
 
 float OneshotSamplerProcessor::getSampleAtPosition(const std::vector<float> &samples, float position)
 {
-    int highestIndex = samples.size() - 1;
-    float scaledPosition = position * highestIndex;
+    float scaledPosition = position * (samples.size() - 1);
 
     int positionA = (int)std::floor(scaledPosition);
     int positionB = (int)std::ceil(scaledPosition);

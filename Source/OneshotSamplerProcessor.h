@@ -40,19 +40,25 @@ namespace synthvr
         AudioParameterFloat* lengthParam;
         AudioParameterFloat* pitchParam;
         AudioParameterFloat* transientParam;
+        AudioParameterFloat* volumeParam;
         AudioParameterBool* triggerParam;
 
         // State
         double currentSampleRate = 1000.0f;
-        double currentPosition = 0.0f;
-        double currentIncrement = 0.0f;
+        float currentPosition = 0.0f;
+        float currentIncrement = 0.0f;
         bool currentlyPlaying = false;
         bool currentlyTriggered = false;
         bool previouslyTriggered = false;
         float currentStartPosition = 0.0f;
         float currentLength = 0.0f;
+
         SmoothedValue<float> smoothedPitch;
         float currentPitch = 0.0f;
+        SmoothedValue<float> smoothedVolume;
+        float currentVolume = 0.75f;
+        SmoothedValue<float> transientShaper;
+        float defaultTransientSpeed = 0.08f;
 
         // Channel setup enum
         enum
