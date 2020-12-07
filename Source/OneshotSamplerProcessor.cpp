@@ -46,6 +46,9 @@ void OneshotSamplerProcessor::prepareToPlay(double sampleRate, int maximumExpect
 
     transientShaper.reset(currentSampleRate, 0.07);
     transientShaper.setCurrentAndTargetValue(1.0f);
+
+    antiClickFade.reset(currentSampleRate, 0.005f);
+    antiClickFade.setCurrentAndTargetValue(0.0f);
 }
 
 void OneshotSamplerProcessor::releaseResources() {}
@@ -78,6 +81,8 @@ void synthvr::OneshotSamplerProcessor::handleTriggers(juce::AudioSampleBuffer& b
 
         transientShaper.setCurrentAndTargetValue(*transientParam + 1.0f);
         transientShaper.setTargetValue(1.0f);
+
+        antiClickFade.setCurrentAndTargetValue(0.0f);
     }
 }
 
@@ -149,21 +154,19 @@ void synthvr::OneshotSamplerProcessor::handlePlayback(juce::AudioSampleBuffer& b
     if (currentlyPlaying)
     {
         currentPosition = getNextPosition(currentPosition, currentPitch, currentStartPosition, currentLength);
+        antiClickFade.setTargetValue(currentPosition < (currentStartPosition + currentLength));
         
-        // TODO: Lower volume when close to length to prevent clicking
-        // TODO: Lower volume when close to start to prevent clicking
-
         buffer.setSample(
             outputChannelLeft, 
             sample, 
-            getSampleAtPosition(floatArrayData[0], currentPosition) * currentVolume);
+            getSampleAtPosition(floatArrayData[0], currentPosition) * currentVolume * antiClickFade.getNextValue());
         
         buffer.setSample(
             outputChannelRight, 
             sample, 
-            getSampleAtPosition(floatArrayData[1], currentPosition) * currentVolume);
+            getSampleAtPosition(floatArrayData[1], currentPosition) * currentVolume * antiClickFade.getCurrentValue());
 
-        if (currentPosition >= 1.0f || currentPosition >= (currentStartPosition + currentLength))
+        if (currentPosition >= 1.0f)
             currentlyPlaying = false;
     }
     else

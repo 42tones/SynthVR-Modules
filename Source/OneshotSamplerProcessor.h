@@ -43,6 +43,10 @@ namespace synthvr
         AudioParameterFloat* volumeParam;
         AudioParameterBool* triggerParam;
 
+        // Defaults
+        int fadeOutSamples = 10;
+        //float currentFade = 1.0f;
+
         // State
         double currentSampleRate = 1000.0f;
         float currentPosition = 0.0f;
@@ -58,6 +62,7 @@ namespace synthvr
         SmoothedValue<float> smoothedVolume;
         float currentVolume = 0.75f;
         SmoothedValue<float> transientShaper;
+        SmoothedValue<float> antiClickFade;
 
         // Channel setup enum
         enum
