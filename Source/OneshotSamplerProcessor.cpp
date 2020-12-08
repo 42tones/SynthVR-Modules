@@ -166,7 +166,7 @@ void synthvr::OneshotSamplerProcessor::handlePlayback(juce::AudioSampleBuffer& b
             sample, 
             getSampleAtPosition(floatArrayData[1], currentPosition) * currentVolume * antiClickFade.getCurrentValue());
 
-        if (currentPosition >= 1.0f)
+        if (currentPosition >= 1.0f || antiClickFade.getCurrentValue() < 0.001f)
             currentlyPlaying = false;
     }
     else

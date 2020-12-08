@@ -32,6 +32,7 @@ namespace synthvr
         void handlePlayback(juce::AudioSampleBuffer& buffer, int sample);
         float getNextPosition(float currentPos, float pitch, float startPos, float length);
         float getSampleAtPosition(const std::vector<float> &samples, float position);
+        void onFloatArrayDataUpdated() override { currentlyPlaying = false; }
 
         // Params
         AudioParameterFloat* bankParam;
@@ -45,7 +46,6 @@ namespace synthvr
 
         // Defaults
         int fadeOutSamples = 10;
-        //float currentFade = 1.0f;
 
         // State
         double currentSampleRate = 1000.0f;
