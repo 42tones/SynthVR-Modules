@@ -32,6 +32,12 @@
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
         <GROUP id="{8A8A2167-2F46-A5BE-4568-5D7A62CD8337}" name="Just">
+          <GROUP id="{8EBB40DF-2741-F960-3362-7B7717D6BF34}" name="Drums">
+            <FILE id="Kka8em" name="OneshotSamplerProcessor.cpp" compile="1" resource="0"
+                  file="Source/OneshotSamplerProcessor.cpp"/>
+            <FILE id="BxyfFg" name="OneshotSamplerProcessor.h" compile="0" resource="0"
+                  file="Source/OneshotSamplerProcessor.h"/>
+          </GROUP>
           <GROUP id="{7D988379-F4DC-435B-FC78-4E672CC98202}" name="LFO">
             <FILE id="k6BBzn" name="WavetableVCLFOProcessor.cpp" compile="1" resource="0"
                   file="Source/WavetableVCLFOProcessor.cpp"/>
