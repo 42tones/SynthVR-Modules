@@ -47,6 +47,7 @@ void SequencerTestProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer
             std::abs(buffer.getSample(1, sample) - previousResetValue) >= 0.5f)
         {
             ResetState();
+            HandleClockTrigger();
         }
 
         // If sample is over threshold and we're not on a clock division step, trigger next step
