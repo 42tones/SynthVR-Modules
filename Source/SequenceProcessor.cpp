@@ -15,6 +15,7 @@ SequenceProcessor::SequenceProcessor() : BaseProcessor(BusesProperties()
     addParameter(gateLengthParam = new AudioParameterFloat("gateLength", "Gate Length", 0.0f, 1.0f, 0.75f));
     addParameter(glideParam = new AudioParameterFloat("glide", "Glide", 0.0f, 1.0f, 0.0f));
     addParameter(loopingParam = new AudioParameterBool("looping", "Looping", true));
+    addParameter(pitchExtentParam = new AudioParameterFloat("pitchExtent", "Pitch Extent", 0.2f, 1.0f, 0.2f));
     addParameter(rootPitchParam = new AudioParameterInt("rootPitch", "Root Pitch", 0, 11, 0));
     addParameter(pitchScaleParam = new AudioParameterInt("pitchScale", "Pitch Scale", unscaled, major, minor));
 
@@ -60,15 +61,14 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     }
 
     // Skip execution if all steps are skipped
-    if (areAllStepsSkipped())
-        return;
+    allStepsAreSkipped = areAllStepsSkipped();
 
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         currentlyTriggered = buffer.getSample(clockInputChannel, sample) >= 0.5f;
 
         // Handle step sequencing
-        if (currentlyTriggered && !previouslyTriggered)
+        if (currentlyTriggered && !previouslyTriggered && !allStepsAreSkipped)
             handleNewClockTrigger();
 
         // Handle gate closing
@@ -104,7 +104,6 @@ void SequenceProcessor::handleNewClockTrigger()
     {
         samplesSinceLastEndOfSequenceGate = 0;
         currentEndOfSequenceGateLengthSamples = samplesPerPulse;
-        currentGateOpen = false;
         currentEndOfSequenceGateOpen = true;
         endOfSequence = false;
     }
@@ -119,7 +118,7 @@ void SequenceProcessor::handleNewClockTrigger()
         currentPulse = 0;
 
         // Find the next non-skipped step
-        while (!getOnOffStatusForStep(++currentStep));
+        while (!incrementCurrentStepUntilEnd() && !getOnOffStatusForStep(currentStep));
 
         samplesPerPulse = samplesSinceLastPulse;
         samplesSinceLastPulse = 0;
@@ -135,7 +134,7 @@ void SequenceProcessor::handleNewClockTrigger()
             currentlyStarted = false;
     }
 
-    // Open gates if sequence is running
+    // Open gate if sequence is running
     if (currentlyStarted)
     {
         samplesSinceLastGate = 0;
@@ -147,7 +146,7 @@ void SequenceProcessor::handleNewClockTrigger()
 
 void SequenceProcessor::updatePitch()
 {
-    targetPitch = getPitchForStep(currentStep);
+    targetPitch = getPitchForStep(currentStep) * *pitchExtentParam;
 
     // TODO: Quantize value to scale
 
@@ -177,13 +176,14 @@ void SequenceProcessor::updateGate()
 
 bool SequenceProcessor::getOnOffStatusForStep(int step)
 {
-    return getParameters()[stepsOnIndices[step]]->getValue();
+    auto param = static_cast<AudioParameterBool*>(getParameters()[stepsOnIndices[step]]);
+    return *param;
 }
 
 bool SequenceProcessor::areAllStepsSkipped()
 {
     for (int i = 0; i < numSteps; i++)
-        if (getParameters()[stepsOnIndices[i]]->getValue())
+        if (getOnOffStatusForStep(i))
             return false;
 
     return true;
@@ -191,12 +191,14 @@ bool SequenceProcessor::areAllStepsSkipped()
 
 int SequenceProcessor::getNumPulsesForStep(int step)
 {
-    return getParameters()[stepsPulseCountIndices[step]]->getValue();
+    auto param = static_cast<AudioParameterInt*>(getParameters()[stepsPulseCountIndices[step]]);
+    return *param;
 }
 
 int SequenceProcessor::getGateModeForStep(int step)
 {
-    return getParameters()[stepsGateModeIndices[step]]->getValue();
+    auto param = static_cast<AudioParameterInt*>(getParameters()[stepsGateModeIndices[step]]);
+    return *param;
 }
 
 float SequenceProcessor::getPitchForStep(int step)
@@ -212,4 +214,15 @@ float SequenceProcessor::getGateLengthForMode(int mode)
         return (float)samplesPerPulse * getNumPulsesForStep(currentStep) * *gateLengthParam;
     else
         return 0.0f;
+}
+
+bool SequenceProcessor::incrementCurrentStepUntilEnd()
+{
+    auto nextStep = currentStep + 1;
+    if (currentStep >= numSteps)
+        return false;
+
+    currentStep = nextStep;
+
+    return true;
 }

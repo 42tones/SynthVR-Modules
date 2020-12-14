@@ -35,11 +35,13 @@ namespace synthvr
         int getGateModeForStep(int step);
         float getGateLengthForMode(int mode);
         float getPitchForStep(int mode);
+        bool incrementCurrentStepUntilEnd();
 
         // Parameters
         AudioParameterFloat* gateLengthParam;
         AudioParameterFloat* glideParam;
         AudioParameterBool* loopingParam;
+        AudioParameterFloat* pitchExtentParam;
         AudioParameterInt* rootPitchParam;
         AudioParameterInt* pitchScaleParam;
 
@@ -71,6 +73,7 @@ namespace synthvr
         bool endOfSequence = false;
         bool currentlyTriggered = false;
         bool previouslyTriggered = false;
+        bool allStepsAreSkipped = false;
 
         // Gate state
         float currentGateLengthSamples = 0.0f;
