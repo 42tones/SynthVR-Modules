@@ -52,6 +52,7 @@ void SequenceProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamp
 
 void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 {
+    // Update pitch smoothing filter if glide param changed
     if (*glideParam != previousGlide)
     {
         glideFilter.coefficients = calculateGlideFilterCoefficients();
@@ -101,8 +102,8 @@ void SequenceProcessor::handleNewClockTrigger()
     // If we have come to the end of the sequence
     if (endOfSequence)
     {
-        samplesSinceLastGate = 0;
-        currentGateLengthSamples = samplesPerPulse;
+        samplesSinceLastEndOfSequenceGate = 0;
+        currentEndOfSequenceGateLengthSamples = samplesPerPulse;
         currentGateOpen = false;
         currentEndOfSequenceGateOpen = true;
         endOfSequence = false;
@@ -118,13 +119,11 @@ void SequenceProcessor::handleNewClockTrigger()
         currentPulse = 0;
 
         // Find the next non-skipped step
-        while (!getOnOffStatusForStep(++currentStep))
-            currentStep++;
+        while (!getOnOffStatusForStep(++currentStep));
 
         samplesPerPulse = samplesSinceLastPulse;
         samplesSinceLastPulse = 0;
     }
-
 
     // If we have done all steps in the sequence
     if (currentStep >= numSteps)
@@ -157,12 +156,20 @@ void SequenceProcessor::updatePitch()
 
 void SequenceProcessor::updateGate()
 {
-    // If enough samples have passed since last gate, close all gates
-    if (currentGateOpen || currentEndOfSequenceGateOpen)
+    // Close gate if enough samples have passed
+    if (currentGateOpen)
     {
-        if (samplesSinceLastGate++ >= currentGateLengthSamples)
+        if ((float)samplesSinceLastGate++ >= currentGateLengthSamples)
         {
             currentGateOpen = false;
+        }
+    }
+
+    // Handle EOS trigger separately in case of looping
+    if (currentEndOfSequenceGateOpen)
+    {
+        if ((float)samplesSinceLastEndOfSequenceGate++ >= currentEndOfSequenceGateLengthSamples)
+        {
             currentEndOfSequenceGateOpen = false;
         }
     }
@@ -202,7 +209,7 @@ float SequenceProcessor::getGateLengthForMode(int mode)
     if (mode == singlePulse || mode == multiPulse)
         return (float)samplesPerPulse * *gateLengthParam;
     else if (mode == holdForPulse)
-        return (float)samplesPerPulse * getNumPulsesForStep(currentStep);
+        return (float)samplesPerPulse * getNumPulsesForStep(currentStep) * *gateLengthParam;
     else
         return 0.0f;
 }

@@ -64,19 +64,21 @@ namespace synthvr
         int currentStep = 0;
         int currentPulse = 0;
 
-        // Gate state
+        // Trigger state
         int samplesPerPulse = 0;
         int samplesSinceLastPulse = 0;
-        float currentGateLengthSamples = 0.0f;
-        int samplesSinceLastGate = 0;
-        bool currentGateOpen = false;
-        bool currentEndOfSequenceGateOpen = false;
-
-        // Trigger state
         bool currentlyStarted = true;
         bool endOfSequence = false;
         bool currentlyTriggered = false;
         bool previouslyTriggered = false;
+
+        // Gate state
+        float currentGateLengthSamples = 0.0f;
+        float currentEndOfSequenceGateLengthSamples = 0.0f;
+        int samplesSinceLastGate = 0;
+        int samplesSinceLastEndOfSequenceGate = 0;
+        bool currentGateOpen = false;
+        bool currentEndOfSequenceGateOpen = false;
 
         // Pitch state
         float currentPitch = 0.0f;
