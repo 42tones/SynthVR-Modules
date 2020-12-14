@@ -52,6 +52,12 @@
           </GROUP>
         </GROUP>
         <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
+          <GROUP id="{3DDB74C0-B025-1B5D-CEAC-820BC027D5B1}" name="Sequence">
+            <FILE id="trayzU" name="SequenceProcessor.cpp" compile="1" resource="0"
+                  file="Source/SequenceProcessor.cpp"/>
+            <FILE id="wsPkZu" name="SequenceProcessor.h" compile="0" resource="0"
+                  file="Source/SequenceProcessor.h"/>
+          </GROUP>
           <GROUP id="{8BA84226-EDB2-F8DF-2820-1370F2C7A4CB}" name="Echo">
             <FILE id="D5JdrY" name="DelayProcessor.cpp" compile="1" resource="0"
                   file="Source/DelayProcessor.cpp"/>
