@@ -58,8 +58,8 @@ namespace synthvr
 
         // Defaults
         int numSteps = 8;
-        float fullGlideFrequency = 0.5f;
-        float noGlideFrequency = 10.0f;
+        float fullGlideFrequency = 5.0f;
+        float noGlideFrequency = 100.0f;
 
         // General state
         double currentSampleRate = 100.0f;
@@ -69,11 +69,12 @@ namespace synthvr
         // Trigger state
         int samplesPerPulse = 0;
         int samplesSinceLastPulse = 0;
-        bool currentlyStarted = true;
-        bool endOfSequence = false;
+        bool currentlyRunning = true;
         bool currentlyTriggered = false;
         bool previouslyTriggered = false;
         bool allStepsAreSkipped = false;
+        bool currentlyReset = false;
+        bool previouslyReset = false;
 
         // Gate state
         float currentGateLengthSamples = 0.0f;

@@ -12,7 +12,7 @@ SequenceProcessor::SequenceProcessor() : BaseProcessor(BusesProperties()
     .withInput("Input", AudioChannelSet::discreteChannels(4))
     .withOutput("Output", AudioChannelSet::discreteChannels(3)))
 {
-    addParameter(gateLengthParam = new AudioParameterFloat("gateLength", "Gate Length", 0.0f, 1.0f, 0.75f));
+    addParameter(gateLengthParam = new AudioParameterFloat("gateLength", "Gate Length", 0.0f, 0.95f, 0.75f));
     addParameter(glideParam = new AudioParameterFloat("glide", "Glide", 0.0f, 1.0f, 0.0f));
     addParameter(loopingParam = new AudioParameterBool("looping", "Looping", true));
     addParameter(pitchExtentParam = new AudioParameterFloat("pitchExtent", "Pitch Extent", 0.2f, 1.0f, 0.2f));
@@ -21,22 +21,30 @@ SequenceProcessor::SequenceProcessor() : BaseProcessor(BusesProperties()
 
     // Initialize parameters for each step
     stepsPitchIndices = std::vector<int>();
+    stepsPitchIndices.reserve(8);
     stepsOnIndices = std::vector<int>();
+    stepsOnIndices.reserve(8);
+    stepsGateModeIndices = std::vector<int>();
+    stepsGateModeIndices.reserve(8);
+    stepsPulseCountIndices = std::vector<int>();
+    stepsPulseCountIndices.reserve(8);
     auto stepParamIndexOffset = getNumParameters();
     for (int i = 0; i < numSteps; i++)
     {
         addParameter(new AudioParameterFloat("stepPitch_" + std::to_string(i), "Step Pitch", 0.0f, 1.0f, 0.5f));
-        stepsPitchIndices.push_back((i * 4) + stepParamIndexOffset + 1);
+        stepsPitchIndices.push_back((i * 4) + stepParamIndexOffset);
         addParameter(new AudioParameterBool("stepOn_" + std::to_string(i), "Step On/Off", true));
-        stepsOnIndices.push_back((i * 4) + stepParamIndexOffset + 2);
+        stepsOnIndices.push_back((i * 4) + stepParamIndexOffset + 1);
         addParameter(new AudioParameterInt("stepGateMode_" + std::to_string(i), "Step Gate Mode", silence, holdForPulse, singlePulse));
-        stepsGateModeIndices.push_back((i * 4) + stepParamIndexOffset + 3);
+        stepsGateModeIndices.push_back((i * 4) + stepParamIndexOffset + 2);
         addParameter(new AudioParameterInt("stepPulseCount_" + std::to_string(i), "Step Pulse Count", 1, 8, 1));
-        stepsPulseCountIndices.push_back((i * 4) + stepParamIndexOffset + 4);
+        stepsPulseCountIndices.push_back((i * 4) + stepParamIndexOffset + 3);
     }
 
     addParameter(currentStepDisplay = new AudioParameterInt("currentStepDisplay", "Current Step Display", 0, numSteps, 0));
     addParameter(currentlyTriggeredDisplay = new AudioParameterBool("currentlyTriggeredDisplay", "Currently Triggered Display", false));
+
+    glideParam->range.setSkewForCentre(0.75f);
 }
 
 SequenceProcessor::~SequenceProcessor() {}
@@ -66,9 +74,23 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         currentlyTriggered = buffer.getSample(clockInputChannel, sample) >= 0.5f;
-
-        // Handle step sequencing
-        if (currentlyTriggered && !previouslyTriggered && !allStepsAreSkipped)
+        currentlyReset = buffer.getSample(resetInputChannel, sample) >= 0.5f;
+        currentlyRunning = 
+            (currentlyRunning 
+            || buffer.getSample(startInputChannel, sample) >= 0.5f) 
+            && !buffer.getSample(stopInputChannel, sample) >= 0.5f;
+        
+        if (currentlyReset && !previouslyReset)
+        {
+            currentStep = 0;
+            currentPulse = 0;
+            currentGateOpen = false;
+            currentEndOfSequenceGateOpen = false;
+            samplesSinceLastGate = 0;
+            samplesSinceLastEndOfSequenceGate = 0;
+            samplesSinceLastPulse = 0;
+        }
+        else if (currentlyTriggered && !previouslyTriggered && !allStepsAreSkipped)
             handleNewClockTrigger();
 
         // Handle gate closing
@@ -87,6 +109,7 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
         // Update state
         previouslyTriggered = currentlyTriggered;
+        previouslyReset = currentlyReset;
         samplesSinceLastPulse++;
     }
 }
@@ -99,49 +122,49 @@ dsp::IIR::Coefficients<float>::Ptr SequenceProcessor::calculateGlideFilterCoeffi
 
 void SequenceProcessor::handleNewClockTrigger()
 {
-    // If we have come to the end of the sequence
-    if (endOfSequence)
-    {
-        samplesSinceLastEndOfSequenceGate = 0;
-        currentEndOfSequenceGateLengthSamples = samplesPerPulse;
-        currentEndOfSequenceGateOpen = true;
-        endOfSequence = false;
-    }
-
     // Don't do anything else if the sequencer isn't running
-    if (!currentlyStarted)
+    if (!currentlyRunning)
         return;
 
     // If we have done all pulses for a step
-    if (currentPulse++ >= getNumPulsesForStep(currentStep))
+    if (++currentPulse >= getNumPulsesForStep(currentStep))
     {
         currentPulse = 0;
 
         // Find the next non-skipped step
-        while (!incrementCurrentStepUntilEnd() && !getOnOffStatusForStep(currentStep));
-
-        samplesPerPulse = samplesSinceLastPulse;
-        samplesSinceLastPulse = 0;
+        while (++currentStep < numSteps && !getOnOffStatusForStep(currentStep));
     }
 
     // If we have done all steps in the sequence
     if (currentStep >= numSteps)
     {
         currentStep = 0;
-        endOfSequence = true;
+
+        samplesSinceLastEndOfSequenceGate = 0;
+        currentEndOfSequenceGateLengthSamples = samplesPerPulse;
+        currentEndOfSequenceGateOpen = true;
 
         if (!*loopingParam)
-            currentlyStarted = false;
+            currentlyRunning = false;
     }
 
     // Open gate if sequence is running
-    if (currentlyStarted)
+    if (currentlyRunning)
     {
+        samplesPerPulse = samplesSinceLastPulse;
         samplesSinceLastGate = 0;
+
         auto gateMode = getGateModeForStep(currentStep);
-        currentGateLengthSamples = getGateLengthForMode(gateMode);
-        currentGateOpen = gateMode != silence;
+
+        if (currentPulse == 0 || gateMode == multiPulse)
+        {
+            currentGateLengthSamples = getGateLengthForMode(gateMode);
+            currentGateOpen = gateMode != silence;
+        }
     }
+
+    // Track timing of pulses for gate length
+    samplesSinceLastPulse = 0;
 }
 
 void SequenceProcessor::updatePitch()
@@ -219,7 +242,7 @@ float SequenceProcessor::getGateLengthForMode(int mode)
 bool SequenceProcessor::incrementCurrentStepUntilEnd()
 {
     auto nextStep = currentStep + 1;
-    if (currentStep >= numSteps)
+    if (nextStep >= numSteps)
         return false;
 
     currentStep = nextStep;
