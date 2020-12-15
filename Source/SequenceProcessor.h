@@ -27,6 +27,7 @@ namespace synthvr
     private:
         dsp::IIR::Coefficients<float>::Ptr calculateGlideFilterCoefficients();
         void handleNewClockTrigger();
+        void HandleIncrementedStep();
         void updatePitch();
         void updateGate();
         bool getOnOffStatusForStep(int step);
@@ -55,11 +56,13 @@ namespace synthvr
 
         // DSP
         dsp::IIR::Filter<float> glideFilter;
+        SmoothedValue<float> smoothedGlideFilterFrequency;
+        float currentGlideFilterFrequency = 0.0f;
 
         // Defaults
         int numSteps = 8;
-        float fullGlideFrequency = 5.0f;
-        float noGlideFrequency = 100.0f;
+        float fullGlideFrequency = 50.0f;
+        float noGlideFrequency = 1000.0f;
 
         // General state
         double currentSampleRate = 100.0f;
@@ -88,6 +91,7 @@ namespace synthvr
         float currentPitch = 0.0f;
         float targetPitch = 0.0f;
         float previousGlide = 0.0f;
+        float currentStepPitch = 0.0f;
 
         // Scale enum
         enum
