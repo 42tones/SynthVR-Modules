@@ -73,7 +73,7 @@ namespace synthvr
         // Trigger state
         int samplesPerPulse = 0;
         int samplesSinceLastPulse = 0;
-        bool currentlyRunning = true;
+        bool currentlyRunning = false;
         bool currentlyTriggered = false;
         bool previouslyTriggered = false;
         bool allStepsAreSkipped = false;

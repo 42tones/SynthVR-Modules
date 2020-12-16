@@ -150,7 +150,7 @@ void SequenceProcessor::handleNewClockTrigger()
         HandleIncrementedStep();
     }
 
-    // Handle opening gate
+    // Handle gate, get pitch and increment pulse
     if (currentlyRunning)
     {
         samplesSinceLastGate = 0;
@@ -170,15 +170,16 @@ void SequenceProcessor::handleNewClockTrigger()
 void synthvr::SequenceProcessor::HandleIncrementedStep()
 {
     // If we have done all steps in the sequence
-    // TODO: This should be compared to last active step instead
     if (currentStep >= numSteps)
     {
         currentStep = 0;
 
-        samplesSinceLastEndOfSequenceGate = 0;
-        currentEndOfSequenceGateLengthSamples = samplesPerPulse;
-        currentEndOfSequenceGateOpen = true;
-        currentGateOpen = false;
+        if (!currentEndOfSequenceGateOpen)
+        {
+            samplesSinceLastEndOfSequenceGate = 0;
+            currentEndOfSequenceGateLengthSamples = samplesPerPulse;
+            currentEndOfSequenceGateOpen = true;
+        }
 
         if (!*loopingParam)
             currentlyRunning = false;
