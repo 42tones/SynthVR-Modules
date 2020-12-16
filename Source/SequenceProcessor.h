@@ -53,6 +53,7 @@ namespace synthvr
 
         AudioParameterInt* currentStepDisplay;
         AudioParameterBool* currentlyTriggeredDisplay;
+        AudioParameterBool* currentlyEOSTriggeredDisplay;
 
         // DSP
         dsp::IIR::Filter<float> glideFilter;

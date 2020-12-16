@@ -39,6 +39,7 @@ SequenceProcessor::SequenceProcessor() : BaseProcessor(BusesProperties()
 
     addParameter(currentStepDisplay = new AudioParameterInt("currentStepDisplay", "Current Step Display", 0, numSteps, 0));
     addParameter(currentlyTriggeredDisplay = new AudioParameterBool("currentlyTriggeredDisplay", "Currently Triggered Display", false));
+    addParameter(currentlyEOSTriggeredDisplay = new AudioParameterBool("currentlyEOSTriggeredDisplay", "Currently EOS Triggered Display", false));
 
     glideParam->range.setSkewForCentre(0.85f);
 }
@@ -78,8 +79,10 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
             currentPulse = 0;
             currentGateOpen = false;
             currentEndOfSequenceGateOpen = false;
+            currentlyRunning = true;
         }
-        else if (currentlyTriggered && !previouslyTriggered && !allStepsAreSkipped)
+
+        if (currentlyTriggered && !previouslyTriggered && !allStepsAreSkipped)
             handleNewClockTrigger();
 
         // Handle gate closing
@@ -95,6 +98,8 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
         // Write outputs
         buffer.setSample(endOfSequenceOutputChannel, sample, currentEndOfSequenceGateOpen);
+        *currentlyEOSTriggeredDisplay = currentEndOfSequenceGateOpen;
+
         if (currentlyRunning)
         {
             buffer.setSample(triggerOutputChannel, sample, currentGateOpen);
@@ -106,7 +111,7 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
         {
             buffer.setSample(triggerOutputChannel, sample, 0.0f);
             buffer.setSample(pitchOutputChannel, sample, 0.0f);
-            *currentStepDisplay = 0.0f;
+            *currentStepDisplay = currentStep;
             *currentlyTriggeredDisplay = 0.0f;
         }
 
@@ -133,7 +138,20 @@ void SequenceProcessor::handleNewClockTrigger()
     // TODO: This seems to be the wrong way round - triggering gate and then advancing step. Should go back to before
     if (!currentlyRunning)
         return;
-    else
+
+    // Handle pulse and step
+    // TODO: Figure out why first pulse is missing when starting but not when looping
+    if (currentPulse >= getNumPulsesForStep(currentStep))
+    {
+        currentPulse = 0;
+
+        // Go to next nonskipped step
+        while (!getOnOffStatusForStep(++currentStep % numSteps));
+        HandleIncrementedStep();
+    }
+
+    // Handle opening gate
+    if (currentlyRunning)
     {
         samplesSinceLastGate = 0;
         auto gateMode = getGateModeForStep(currentStep);
@@ -145,21 +163,7 @@ void SequenceProcessor::handleNewClockTrigger()
         }
 
         currentStepPitch = getPitchForStep(currentStep);
-    }
-
-    // Increment pulse & step
-    // TODO: Figure out why first pulse is missing when starting but not when looping
-    if (++currentPulse >= getNumPulsesForStep(currentStep))
-    {
-        currentPulse = 0;
-
-        currentStep++;
-        HandleIncrementedStep();
-        while (currentlyRunning && !getOnOffStatusForStep(currentStep))
-        {
-            currentStep++;
-            HandleIncrementedStep();
-        }
+        currentPulse++;
     }
 }
 
@@ -174,6 +178,7 @@ void synthvr::SequenceProcessor::HandleIncrementedStep()
         samplesSinceLastEndOfSequenceGate = 0;
         currentEndOfSequenceGateLengthSamples = samplesPerPulse;
         currentEndOfSequenceGateOpen = true;
+        currentGateOpen = false;
 
         if (!*loopingParam)
             currentlyRunning = false;
