@@ -5,11 +5,11 @@
               cppLanguageStandard="17" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="qVSXRs" name="SynthVR-Native">
     <GROUP id="{9FCFD047-2980-44E1-F2D7-B096F62EFC8D}" name="Source">
-      <GROUP id="{06EDF44F-1FA1-95A6-DD13-24F85E3EB545}" name="Utilities">
-        <FILE id="rgFget" name="ParameterUtils.h" compile="0" resource="0"
-              file="Source/ParameterUtils.h"/>
-      </GROUP>
-      <GROUP id="{42F2B79D-7F3F-EA2C-373B-636993A10964}" name="Includes">
+      <GROUP id="{BD3F5563-A48F-66BF-7EFC-58943D2399E0}" name="DSP Components">
+        <GROUP id="{05FD7B91-9DA4-EA0B-A548-2A356407DEEE}" name="CVQuantizer">
+          <FILE id="VO4yyP" name="CVQuantizer.cpp" compile="1" resource="0" file="Source/CVQuantizer.cpp"/>
+          <FILE id="sWFxxs" name="CVQuantizer.h" compile="0" resource="0" file="Source/CVQuantizer.h"/>
+        </GROUP>
         <GROUP id="{7B63226F-4D78-20D8-7FE2-21BCE1ADD164}" name="SingleSampleLadderFilter">
           <FILE id="ehXACs" name="SingleSampleLadderFilter.cpp" compile="1" resource="0"
                 file="Source/SingleSampleLadderFilter.cpp"/>
@@ -21,6 +21,12 @@
           <FILE id="x0m1bU" name="WaveUtils.cpp" compile="1" resource="0" file="Source/WaveUtils.cpp"/>
           <FILE id="kjWhbc" name="WaveUtils.h" compile="0" resource="0" file="Source/WaveUtils.h"/>
         </GROUP>
+      </GROUP>
+      <GROUP id="{06EDF44F-1FA1-95A6-DD13-24F85E3EB545}" name="Utilities">
+        <FILE id="rgFget" name="ParameterUtils.h" compile="0" resource="0"
+              file="Source/ParameterUtils.h"/>
+      </GROUP>
+      <GROUP id="{42F2B79D-7F3F-EA2C-373B-636993A10964}" name="Includes">
         <FILE id="xcf5Hz" name="json.hpp" compile="0" resource="0" file="Source/json.hpp"/>
       </GROUP>
       <GROUP id="{A89DF260-FFFC-6B16-A58B-C5F529690808}" name="API">
