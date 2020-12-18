@@ -22,6 +22,9 @@ namespace synthvr
 
         void prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) override;
         void processBlock(AudioBuffer<float>& buffer, MidiBuffer&) override;
+        void writeOutputs(juce::AudioSampleBuffer& buffer, int sample);
+        void handleStart();
+        void handleReset();
         //==============================================================================
         const String getName() const override { return "SequenceProcessor"; }
     private:
@@ -45,6 +48,7 @@ namespace synthvr
         AudioParameterFloat* pitchExtentParam;
         AudioParameterInt* rootPitchParam;
         AudioParameterInt* pitchScaleParam;
+        AudioParameterBool* toggleRunningParam;
 
         std::vector<int> stepsPitchIndices;
         std::vector<int> stepsOnIndices;
@@ -54,6 +58,7 @@ namespace synthvr
         AudioParameterInt* currentStepDisplay;
         AudioParameterBool* currentlyTriggeredDisplay;
         AudioParameterBool* currentlyEOSTriggeredDisplay;
+        AudioParameterBool* currentlyRunningDisplay;
 
         // DSP
         dsp::IIR::Filter<float> glideFilter;
@@ -73,12 +78,15 @@ namespace synthvr
         // Trigger state
         int samplesPerPulse = 0;
         int samplesSinceLastPulse = 0;
+        int samplesSinceSecondLastPulse = 0;
         bool currentlyRunning = false;
+        bool previouslyRunning = false;
         bool currentlyTriggered = false;
         bool previouslyTriggered = false;
         bool allStepsAreSkipped = false;
         bool currentlyReset = false;
         bool previouslyReset = false;
+        bool previouslyToggledRunning = false;
 
         // Gate state
         float currentGateLengthSamples = 0.0f;
