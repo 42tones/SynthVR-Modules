@@ -5,8 +5,6 @@ using namespace juce;
 
 enum class MusicalScale
 {
-    Minor,
-    Major,
     Ionian,
     Dorian,
     Phrygian,
@@ -20,8 +18,6 @@ enum class MusicalScale
 };
 
 static std::vector<std::vector<int>> musicalScaleNotes{
-    {0,2,3,5,7,8,10},  // pentatonic minor
-    {0,2,4,5,7,9,10},  // pentatonic major
     {0,2,4,5,7,9,11},  // ionian (natural major)
     {0,2,3,5,7,9,10},  // dorian
     {0,1,3,5,7,8,10},  // phrygian

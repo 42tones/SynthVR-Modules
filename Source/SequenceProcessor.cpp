@@ -316,9 +316,9 @@ MusicalScale SequenceProcessor::getMusicalScale(int sequencerScale)
     switch (sequencerScale)
     {
         case SequencerScale::minor:
-            return MusicalScale::Minor;
+            return MusicalScale::Aeolian;
         case SequencerScale::major:
-            return MusicalScale::Major;
+            return MusicalScale::Ionian;
         default:
             return MusicalScale::Chromatic;
     }
