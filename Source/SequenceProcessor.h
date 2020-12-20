@@ -29,6 +29,8 @@ namespace synthvr
         void handleReset();
         //==============================================================================
         const String getName() const override { return "SequenceProcessor"; }
+    protected:
+        void onStateUpdated() override { currentlyRunning = *currentlyRunningDisplay; }
     private:
         dsp::IIR::Coefficients<float>::Ptr calculateGlideFilterCoefficients();
         void handleNewClockTrigger();
@@ -37,6 +39,7 @@ namespace synthvr
         void updateGate();
         bool getOnOffStatusForStep(int step);
         bool areAllStepsSkipped();
+        int firstNonSkippedStep();
         int getNumPulsesForStep(int step);
         int getGateModeForStep(int step);
         float getGateLengthForMode(int mode);

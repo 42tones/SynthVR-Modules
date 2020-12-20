@@ -150,7 +150,7 @@ void synthvr::SequenceProcessor::handleReset()
 {
     if (currentlyReset && !previouslyReset)
     {
-        currentStep = 0;
+        currentStep = firstNonSkippedStep();
         currentPulse = 0;
         currentGateOpen = false;
         currentEndOfSequenceGateOpen = false;
@@ -207,7 +207,7 @@ void synthvr::SequenceProcessor::HandleIncrementedStep()
     // If we have done all steps in the sequence
     if (currentStep >= numSteps)
     {
-        currentStep = 0;
+        currentStep = firstNonSkippedStep();
 
         if (!currentEndOfSequenceGateOpen)
         {
@@ -255,6 +255,15 @@ bool SequenceProcessor::areAllStepsSkipped()
             return false;
 
     return true;
+}
+
+int SequenceProcessor::firstNonSkippedStep()
+{
+    for (int i = 0; i < numSteps; i++)
+        if (getOnOffStatusForStep(i))
+            return i;
+
+    return 0;
 }
 
 int SequenceProcessor::getNumPulsesForStep(int step)
