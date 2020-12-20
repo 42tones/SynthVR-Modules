@@ -33,6 +33,7 @@
 #include "ColoredNoiseProcessor.h"
 #include "WavetableVCLFOProcessor.h"
 #include "OneshotSamplerProcessor.h"
+#include "SequenceProcessor.h"
 
 using Node = AudioProcessorGraph::Node;
 using NodeID = AudioProcessorGraph::NodeID;
@@ -59,7 +60,8 @@ namespace synthvr
             DelayProcessor = 14,
             ColoredNoiseProcessor = 15,
             WavetableVCLFOProcessor = 16,
-            OneshotSamplerProcessor = 17
+            OneshotSamplerProcessor = 17,
+            SequenceProcessor = 18
         };
         
         enum ParameterType { Continuous = 0, Discrete = 1, Boolean = 2 };
@@ -121,6 +123,9 @@ namespace synthvr
 
                 case ProcessorID::OneshotSamplerProcessor:
                     return reinterpret_cast<BaseProcessor*>(new class OneshotSamplerProcessor());
+
+                case ProcessorID::SequenceProcessor:
+                    return reinterpret_cast<BaseProcessor*>(new class SequenceProcessor());
 
                 default:
                     return reinterpret_cast<BaseProcessor *>(new class SingleChannelTestProcessor());
