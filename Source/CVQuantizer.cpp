@@ -19,6 +19,12 @@ void CVQuantizer::setScale(const std::vector<int> scale) noexcept
         currentScale[note] = currentScale[note] % 12;
 }
 
+void CVQuantizer::setScale(MusicalScale scale) noexcept
+{
+    auto scaleToUse = makeScale(scale);
+    setScale(scaleToUse);
+}
+
 float CVQuantizer::processSample(float sample) noexcept
 {
     if (!enabled)
@@ -63,4 +69,9 @@ float CVQuantizer::getSignMultiplier(bool positive) noexcept
         return 1.0f;
     else
         return -1.0f;
+}
+
+std::vector<int> CVQuantizer::makeScale(MusicalScale scale) noexcept
+{
+    return musicalScaleNotes[(int)scale];
 }

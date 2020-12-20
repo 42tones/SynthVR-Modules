@@ -9,6 +9,7 @@
 #include "JuceHeader.h"
 #include "BaseProcessor.h"
 #include "ParameterUtils.h"
+#include "CVQuantizer.h"
 #include <algorithm>
 
 using namespace juce;
@@ -21,6 +22,7 @@ namespace synthvr
         ~SequenceProcessor();
 
         void prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) override;
+        void handleScaleUpdate();
         void processBlock(AudioBuffer<float>& buffer, MidiBuffer&) override;
         void writeOutputs(juce::AudioSampleBuffer& buffer, int sample);
         void handleStart();
@@ -40,6 +42,7 @@ namespace synthvr
         float getGateLengthForMode(int mode);
         float getPitchForStep(int mode);
         bool incrementCurrentStepUntilEnd();
+        MusicalScale getMusicalScale(int sequencerScale);
 
         // Parameters
         AudioParameterFloat* gateLengthParam;
@@ -61,6 +64,7 @@ namespace synthvr
         AudioParameterBool* currentlyRunningDisplay;
 
         // DSP
+        CVQuantizer quantizer;
         dsp::IIR::Filter<float> glideFilter;
         SmoothedValue<float> smoothedGlideFilterFrequency;
         float currentGlideFilterFrequency = 0.0f;
@@ -103,7 +107,7 @@ namespace synthvr
         float currentStepPitch = 0.0f;
 
         // Scale enum
-        enum
+        enum SequencerScale
         {
             unscaled = 0,
             chromatic = 1,

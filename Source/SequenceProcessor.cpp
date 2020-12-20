@@ -59,6 +59,8 @@ void SequenceProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamp
     glideFilter.prepare(processSpec);
     glideFilter.reset();
     glideFilter.coefficients = calculateGlideFilterCoefficients();
+
+    handleScaleUpdate();
 }
 
 void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
@@ -219,8 +221,9 @@ void synthvr::SequenceProcessor::HandleIncrementedStep()
 void SequenceProcessor::updatePitch()
 {
     targetPitch = currentStepPitch * *pitchExtentParam;
+    targetPitch = quantizer.processSample(targetPitch);
 
-    // TODO: Quantize value to scale
+    // TODO: Add root pitch to it
 
     currentPitch = glideFilter.processSample(targetPitch);
 }
@@ -292,4 +295,24 @@ bool SequenceProcessor::incrementCurrentStepUntilEnd()
     currentStep = nextStep;
 
     return true;
+}
+
+void SequenceProcessor::handleScaleUpdate()
+{
+    quantizer.setEnabled(*pitchScaleParam != SequencerScale::unscaled);
+    quantizer.setScale(getMusicalScale(*pitchScaleParam));
+}
+
+MusicalScale SequenceProcessor::getMusicalScale(int sequencerScale)
+{
+    // Map sequencer scale enum to musical scale enum
+    switch (sequencerScale)
+    {
+        case SequencerScale::minor:
+            return MusicalScale::Minor;
+        case SequencerScale::major:
+            return MusicalScale::Major;
+        default:
+            return MusicalScale::Chromatic;
+    }
 }
