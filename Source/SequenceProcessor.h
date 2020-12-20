@@ -105,6 +105,7 @@ namespace synthvr
         float targetPitch = 0.0f;
         float previousGlide = 0.0f;
         float currentStepPitch = 0.0f;
+        int currentSequencerScale = -1;
 
         // Scale enum
         enum SequencerScale

@@ -12,11 +12,11 @@ SequenceProcessor::SequenceProcessor() : BaseProcessor(BusesProperties()
     .withInput("Input", AudioChannelSet::discreteChannels(4))
     .withOutput("Output", AudioChannelSet::discreteChannels(3)))
 {
-    addParameter(gateLengthParam = new AudioParameterFloat("gateLength", "Gate Length", 0.0f, 0.95f, 0.75f));
+    addParameter(gateLengthParam = new AudioParameterFloat("gateLength", "Gate Length", 0.05f, 0.95f, 0.75f));
     addParameter(glideParam = new AudioParameterFloat("glide", "Glide", 0.0f, 1.0f, 0.0f));
     addParameter(loopingParam = new AudioParameterBool("looping", "Looping", true));
     addParameter(pitchExtentParam = new AudioParameterFloat("pitchExtent", "Pitch Extent", 0.2f, 1.0f, 0.2f));
-    addParameter(rootPitchParam = new AudioParameterInt("rootPitch", "Root Pitch", 0, 11, 0));
+    addParameter(rootPitchParam = new AudioParameterInt("rootPitch", "Root Pitch", 0, 12, 0));
     addParameter(pitchScaleParam = new AudioParameterInt("pitchScale", "Pitch Scale", unscaled, major, minor));
     addParameter(toggleRunningParam = new AudioParameterBool("toggleRunning", "Toggle Running", false));
 
@@ -96,7 +96,10 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
         // Handle pitch
         if (currentGateOpen)
+        {
+            handleScaleUpdate();
             updatePitch();
+        }
 
         // Write to buffer
         writeOutputs(buffer, sample);
@@ -222,9 +225,7 @@ void SequenceProcessor::updatePitch()
 {
     targetPitch = currentStepPitch * *pitchExtentParam;
     targetPitch = quantizer.processSample(targetPitch);
-
-    // TODO: Add root pitch to it
-
+    targetPitch += *rootPitchParam / 12.0f / 5.0f;
     currentPitch = glideFilter.processSample(targetPitch);
 }
 
@@ -299,8 +300,14 @@ bool SequenceProcessor::incrementCurrentStepUntilEnd()
 
 void SequenceProcessor::handleScaleUpdate()
 {
+    // Stop execution if scale parameter was not updated
+    if (*pitchScaleParam == currentSequencerScale)
+        return;
+
+    // Update CV quantizer parameters based on selected Sequencer Scale
     quantizer.setEnabled(*pitchScaleParam != SequencerScale::unscaled);
     quantizer.setScale(getMusicalScale(*pitchScaleParam));
+    currentSequencerScale = *pitchScaleParam;
 }
 
 MusicalScale SequenceProcessor::getMusicalScale(int sequencerScale)
