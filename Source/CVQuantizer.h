@@ -14,23 +14,25 @@ public:
 
     /** Sets the scale of the quantizer.
 
-        @param notes the new scale notes to use.
+        @param scale: the new scale notes to use.
     */
-    void setScale(std::vector<int> notes) noexcept;
+    void setScale(const std::vector<int> scale) noexcept;
 
     float processSample(float sample) noexcept;
 
 private:
+    float getSignMultiplier(bool positive) noexcept;
+
     bool enabled = true;
     std::vector<int> currentScale;
 
-    int remappedSample = 0.0f;
+    float remappedSample = 0.0f;
     bool isPositive = true;
 
-    int octaveInSample = 0;
-    int noteInSample = 0;
+    int currentOctave = 0;
+    int currentNote = 0;
     int selectedNote = 0;
 
-    int octavesInRange = 5;
-    int notesInOctave = 12;
+    int octavesPerVolt = 5;
+    int notesPerOctave = 12;
 };
