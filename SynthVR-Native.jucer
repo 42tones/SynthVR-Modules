@@ -38,6 +38,12 @@
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
         <GROUP id="{8A8A2167-2F46-A5BE-4568-5D7A62CD8337}" name="Just">
+          <GROUP id="{8E71CB5F-93A4-E348-3B28-3773BD1217FC}" name="Amp">
+            <FILE id="My7EN7" name="DualVCAProcessor.cpp" compile="1" resource="0"
+                  file="Source/DualVCAProcessor.cpp"/>
+            <FILE id="D9YNCx" name="DualVCAProcessor.h" compile="0" resource="0"
+                  file="Source/DualVCAProcessor.h"/>
+          </GROUP>
           <GROUP id="{8EBB40DF-2741-F960-3362-7B7717D6BF34}" name="Drums">
             <FILE id="Kka8em" name="OneshotSamplerProcessor.cpp" compile="1" resource="0"
                   file="Source/OneshotSamplerProcessor.cpp"/>
