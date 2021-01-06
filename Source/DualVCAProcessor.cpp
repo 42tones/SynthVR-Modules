@@ -13,10 +13,10 @@ DualVCAProcessor::DualVCAProcessor() : BaseProcessor(BusesProperties()
     .withOutput("Output", AudioChannelSet::discreteChannels(2)))
 {
     // Parameters
-    addParameter(gainAmountA = new AudioParameterFloat("gainA", "Gain A", 0.0f, 2.0f, 1.0f));
-    addParameter(cvAmountA = new AudioParameterFloat("cvA", "CV A", 0.0f, 2.0f, 0.5f));
-    addParameter(gainAmountB = new AudioParameterFloat("gainB", "Gain A", 0.0f, 2.0f, 1.0f));
-    addParameter(cvAmountB = new AudioParameterFloat("cvB", "CV A", 0.0f, 2.0f, 0.5f));
+    addParameter(gainAmountA = new AudioParameterFloat("gainA", "Gain A", -0.1f, maxGainAmount, 1.0f));
+    addParameter(cvAmountA = new AudioParameterFloat("cvA", "CV A", 0.0f, 1.0f, 0.5f));
+    addParameter(gainAmountB = new AudioParameterFloat("gainB", "Gain B", -0.1f, maxGainAmount, 1.0f));
+    addParameter(cvAmountB = new AudioParameterFloat("cvB", "CV A", 0.0f, 1.0f, 0.5f));
     
     addParameter(cvADisplay = new AudioParameterFloat("cvADisplay", "CV A Display", 0.0f, 1.0f, 0.0f));
     addParameter(outADisplay = new AudioParameterFloat("outADisplay", "Out A Display", 0.0f, 1.0f, 0.0f));
@@ -63,7 +63,7 @@ void DualVCAProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
         {
             gainProcessorA.setGainLinear(
                 ParameterUtils::calculateModulationLinear(
-                    *gainAmountA, 
+                    *gainAmountA,
                     buffer.getSample(cvAChannel, sample),
                     *cvAmountA,
                     0.0f,
@@ -73,11 +73,13 @@ void DualVCAProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
             buffer.setSample(outputAChannel, sample,
                 gainProcessorA.processSample(
-                    buffer.getSample(inputAAChannel, sample) 
+                    buffer.getSample(inputAAChannel, sample)
                     + buffer.getSample(inputABChannel, sample)
                 )
             );
         }
+        else
+            buffer.setSample(outputAChannel, sample, 0.0f);
 
         // Process B block
         if (isInputConnected[inputBAChannel] || isInputConnected[inputBBChannel])
@@ -99,6 +101,8 @@ void DualVCAProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
                 )
             );
         }
+        else
+            buffer.setSample(outputBChannel, sample, 0.0f);
     }
 
     // Write outputs to display

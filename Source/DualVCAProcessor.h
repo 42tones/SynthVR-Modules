@@ -40,6 +40,7 @@ namespace synthvr
         dsp::Gain<float> gainProcessorA;
         dsp::Gain<float> gainProcessorB;
         float defaultGainRampTime = 0.001f;
+        float maxGainAmount = 2.0f;
 
         enum
         {
