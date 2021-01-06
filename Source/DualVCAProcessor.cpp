@@ -25,9 +25,9 @@ DualVCAProcessor::DualVCAProcessor() : BaseProcessor(BusesProperties()
 
     // DSP
     gainProcessorA.setGainLinear(0.0f);
-    gainProcessorA.setRampDurationSeconds(0.001f);
+    gainProcessorA.setRampDurationSeconds(defaultGainRampTime);
     gainProcessorB.setGainLinear(0.0f);
-    gainProcessorB.setRampDurationSeconds(0.001f);
+    gainProcessorB.setRampDurationSeconds(defaultGainRampTime);
 }
 
 DualVCAProcessor::~DualVCAProcessor() {}
@@ -45,9 +45,17 @@ void DualVCAProcessor::releaseResources() {}
 void DualVCAProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 {
     // Write CV inputs to displays
-    *cvADisplay = (buffer.getRMSLevel(cvAChannel, 0, buffer.getNumSamples()));
-    *cvBDisplay = (buffer.getRMSLevel(cvBChannel, 0, buffer.getNumSamples()));
+    if (isInputConnected[cvAChannel])
+        *cvADisplay = (buffer.getRMSLevel(cvAChannel, 0, buffer.getNumSamples()));
+    else
+        *cvADisplay = 0.0f;
 
+    if (isInputConnected[cvBChannel])
+        *cvBDisplay = (buffer.getRMSLevel(cvBChannel, 0, buffer.getNumSamples()));
+    else
+        *cvBDisplay = 0.0f;
+
+    // Process amp
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
         // Process A block
@@ -85,7 +93,7 @@ void DualVCAProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
             );
 
             buffer.setSample(outputBChannel, sample,
-                gainProcessorA.processSample(
+                gainProcessorB.processSample(
                     buffer.getSample(inputBAChannel, sample)
                     + buffer.getSample(inputBBChannel, sample)
                 )
@@ -94,6 +102,13 @@ void DualVCAProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     }
 
     // Write outputs to display
-    *outADisplay = (buffer.getRMSLevel(outputAChannel, 0, buffer.getNumSamples()));
-    *outBDisplay = (buffer.getRMSLevel(outputBChannel, 0, buffer.getNumSamples()));
+    if (isInputConnected[inputAAChannel] || isInputConnected[inputABChannel])
+        *outADisplay = (buffer.getRMSLevel(outputAChannel, 0, buffer.getNumSamples()));
+    else
+        *outADisplay = 0.0f;
+
+    if (isInputConnected[inputBAChannel] || isInputConnected[inputBBChannel])
+        *outBDisplay = (buffer.getRMSLevel(outputBChannel, 0, buffer.getNumSamples()));
+    else
+        *outBDisplay = 0.0f;
 }

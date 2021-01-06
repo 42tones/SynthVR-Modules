@@ -36,8 +36,10 @@ namespace synthvr
         AudioParameterFloat* cvBDisplay;
         AudioParameterFloat* outBDisplay;
 
+        // DSP
         dsp::Gain<float> gainProcessorA;
         dsp::Gain<float> gainProcessorB;
+        float defaultGainRampTime = 0.001f;
 
         enum
         {
