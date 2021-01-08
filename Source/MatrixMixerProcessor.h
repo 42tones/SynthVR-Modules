@@ -31,14 +31,14 @@ namespace synthvr
 
         // DSP
         std::vector<std::vector<dsp::Gain<float>>> gainProcessors;
-        float defaultGainRampTime = 0.001f;
-        float maxGainAmount = 2.0f;
+        float defaultGainRampTime = 0.05f;
+        float maxGainAmount = 1.0f;
         int numChannels = 4;
 
         // State
-        AudioParameterFloat* currentGainParam;
         float currentGain = 0.0f;
         float currentSample = 0.0f;
+        dsp::Matrix<float> currentSamples = dsp::Matrix<float>(numChannels, numChannels);
 
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatrixMixerProcessor)
