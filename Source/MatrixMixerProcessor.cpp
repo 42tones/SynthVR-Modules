@@ -9,34 +9,34 @@
 using namespace synthvr;
 
 MatrixMixerProcessor::MatrixMixerProcessor() : BaseProcessor(BusesProperties()
-    .withInput("Inputs", AudioChannelSet::discreteChannels(numChannels))
-    .withOutput("Output", AudioChannelSet::discreteChannels(numChannels)))
+    .withInput("Inputs", AudioChannelSet::discreteChannels(4))
+    .withOutput("Output", AudioChannelSet::discreteChannels(4)))
 {
     // Parameters
     addParameter(isBipolarParam = new AudioParameterBool("bipolar", "Bipolar", false));
 
     // Add gain params and processors
     auto paramIndexOffset = getNumParameters();
-    for (int outputChannel = 0; outputChannel < numChannels; outputChannel++)
+    for (int o = 0; o < numChannels; o++)
     {
         auto outputChannelIndices = std::vector<int>();
         auto outputChannelGains = std::vector<dsp::Gain<float>>();
 
-        for (int inputChannel = 0; inputChannel < numChannels; inputChannel++)
+        for (int i = 0; i < numChannels; i++)
         {
             // Add gain parameter
             addParameter(
                 new AudioParameterFloat(
-                    "in_" + std::to_string(inputChannel) + "_out_" + std::to_string(outputChannel),
+                    "in_" + std::to_string(i) + "_out_" + std::to_string(o),
                     "Gain", 
                     -0.1f, 
                     maxGainAmount, 
                     1.0f
                 )
             );
-            outputChannelIndices.push_back(outputChannel + inputChannel + paramIndexOffset);
+            outputChannelIndices.push_back(o + i + paramIndexOffset);
 
-            // Add gain processor
+            // Add gain processor initialized to 0
             auto gainProcessor = dsp::Gain<float>();
             gainProcessor.setGainLinear(0.0f);
             gainProcessor.setRampDurationSeconds(defaultGainRampTime);
@@ -54,39 +54,43 @@ void MatrixMixerProcessor::prepareToPlay(double sampleRate, int maximumExpectedS
 {
     // Prepare DSP modules
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock) };
-    for (int outputChannel = 0; outputChannel < numChannels; outputChannel++)
-        for (int inputChannel = 0; inputChannel < numChannels; inputChannel++)
-            this->gainProcessors[outputChannel][inputChannel].prepare(processSpec);
+    for (int o = 0; o < numChannels; o++)
+        for (int i = 0; i < numChannels; i++)
+            this->gainProcessors[o][i].prepare(processSpec);
 }
 
 void MatrixMixerProcessor::releaseResources() {}
 
 void MatrixMixerProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 {
-    for (int outputChannel = 0; outputChannel < numChannels; outputChannel++)
+    // Process each sample of the input
+    for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
-        // Adjust the input gain processors for this output (at block time)
-        for (int inputChannel = 0; inputChannel < numChannels; inputChannel++)
+        // Mix all input channels for each output channel
+        for (int o = 0; o < numChannels; o++)
         {
-            currentGainParam = static_cast<AudioParameterFloat*>(
-                getParameters()[gainParamIndices[outputChannel][inputChannel]]);
-            currentGain = ParameterUtils::clamp(*currentGainParam, 0.0f, maxGainAmount);
-            if (*isBipolarParam)
-                currentGain = (currentGain * 2) - (maxGainAmount / 2);
+            // Don't process this output if its not connected
+            if (!isOutputConnected[o])
+                continue;
 
-            gainProcessors[outputChannel][inputChannel].setGainLinear(currentGain);
-        }
-
-        // Process the buffer for this output
-        for (int sample = 0; sample < buffer.getNumSamples(); sample++)
-        {
-            // Mix all input channels for this output channel
             currentSample = 0.0f;
-            for (int inputChannel = 0; inputChannel < numChannels; inputChannel++)
-                currentSample += gainProcessors[outputChannel][inputChannel].processSample(
-                    buffer.getSample(inputChannel, sample));
+            for (int i = 0; i < numChannels; i++)
+            {
+                // Update gain
+                currentGainParam = static_cast<AudioParameterFloat*>(
+                    getParameters()[gainParamIndices[o][i]]);
+                currentGain = ParameterUtils::clamp(*currentGainParam, 0.0f, maxGainAmount);
+                if (*isBipolarParam)
+                    currentGain = (currentGain * 2) - (maxGainAmount / 2);
 
-            buffer.setSample(outputChannel, sample, currentSample);
+                gainProcessors[o][i].setGainLinear(currentGain);
+
+                // Mix in sample
+                currentSample += gainProcessors[o][i].processSample(
+                    buffer.getSample(i, sample));
+            }
+
+            buffer.setSample(o, sample, currentSample);
         }
     }
 }
