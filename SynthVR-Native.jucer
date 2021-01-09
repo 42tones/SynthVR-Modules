@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="PiEjaB" name="SynthVR-Native" projectType="dll" version="0.5.0"
+<JUCERPROJECT id="PiEjaB" name="SynthVR-Native" projectType="dll" version="0.6.0"
               companyName="42tones" companyWebsite="www.42tones.com" companyEmail="hello@42tones.com"
-              cppLanguageStandard="17" jucerFormatVersion="1" displaySplashScreen="1"
-              companyCopyright="Copyright 2021 42tones">
+              cppLanguageStandard="17" jucerFormatVersion="1" displaySplashScreen="1">
   <MAINGROUP id="qVSXRs" name="SynthVR-Native">
     <GROUP id="{9FCFD047-2980-44E1-F2D7-B096F62EFC8D}" name="Source">
       <GROUP id="{BD3F5563-A48F-66BF-7EFC-58943D2399E0}" name="DSP Components">
@@ -65,6 +64,12 @@
           </GROUP>
         </GROUP>
         <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
+          <GROUP id="{04084843-B15A-44F2-1205-083DEA542AE2}" name="Mix">
+            <FILE id="eVBKQn" name="MatrixMixerProcessor.cpp" compile="1" resource="0"
+                  file="Source/MatrixMixerProcessor.cpp"/>
+            <FILE id="mRuiRR" name="MatrixMixerProcessor.h" compile="0" resource="0"
+                  file="Source/MatrixMixerProcessor.h"/>
+          </GROUP>
           <GROUP id="{3DDB74C0-B025-1B5D-CEAC-820BC027D5B1}" name="Sequence">
             <FILE id="trayzU" name="SequenceProcessor.cpp" compile="1" resource="0"
                   file="Source/SequenceProcessor.cpp"/>
