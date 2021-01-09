@@ -38,7 +38,14 @@ namespace synthvr
         // State
         float currentGain = 0.0f;
         float currentSample = 0.0f;
-        dsp::Matrix<float> currentSamples = dsp::Matrix<float>(numChannels, numChannels);
+        std::vector <std::vector<float>> currentSamples
+        {
+            {0.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f}
+        };
+        // dsp::Matrix<float> currentSamples = dsp::Matrix<float>(numChannels, numChannels);
 
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatrixMixerProcessor)
