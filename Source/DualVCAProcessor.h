@@ -23,7 +23,7 @@ namespace synthvr
         void releaseResources() override;
         void processBlock(AudioBuffer<float>& buffer, MidiBuffer&) override;
         //==============================================================================
-        const String getName() const override { return "AmplifierTestProcessor"; }
+        const String getName() const override { return "DualVCAProcessor"; }
     private:
         // Parameters
         AudioParameterFloat* gainAmountA;
