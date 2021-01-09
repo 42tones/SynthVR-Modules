@@ -45,7 +45,6 @@ namespace synthvr
             {0.0f, 0.0f, 0.0f, 0.0f},
             {0.0f, 0.0f, 0.0f, 0.0f}
         };
-        // dsp::Matrix<float> currentSamples = dsp::Matrix<float>(numChannels, numChannels);
 
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatrixMixerProcessor)

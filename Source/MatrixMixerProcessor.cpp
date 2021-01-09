@@ -65,7 +65,6 @@ void MatrixMixerProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     // Process each sample of the input
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
-        //currentSamples.clear();
         for (int o = 0; o < numChannels; o++)
             for (int i = 0; i < numChannels; i++)
                 currentSamples[o][i] = 0.0f;
@@ -92,7 +91,6 @@ void MatrixMixerProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
                 // Mix in sample
                 currentSamples[o][i] = gainProcessors[o][i].processSample(buffer.getSample(i, sample));
-               // currentSamples(o,i) = gainProcessors[o][i].processSample(buffer.getSample(i, sample));
             }
         }
 
@@ -102,8 +100,6 @@ void MatrixMixerProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
             for (int i = 0; i < numChannels; i++)
                 currentSample += currentSamples[o][i];
                 
-            //currentSample += currentSamples(o, i);
-
             buffer.setSample(o, sample, currentSample);
         }
     }
