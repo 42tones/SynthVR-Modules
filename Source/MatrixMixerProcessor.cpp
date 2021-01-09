@@ -81,7 +81,7 @@ void MatrixMixerProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
                 // Update gain
                 auto currentGainParam = static_cast<AudioParameterFloat*>(getParameters()[gainParamIndices[o][i]]);
                 if (*isBipolarParam)
-                    currentGain = (currentGainParam->convertTo0to1(*currentGainParam) * 2) - 0.5f;
+                    currentGain = (*currentGainParam * 2) - maxGainAmount;
                 else
                     currentGain = ParameterUtils::clamp(*currentGainParam, 0.0f, maxGainAmount);
 

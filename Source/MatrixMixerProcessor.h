@@ -32,7 +32,7 @@ namespace synthvr
         // DSP
         std::vector<std::vector<dsp::Gain<float>>> gainProcessors;
         float defaultGainRampTime = 0.05f;
-        float maxGainAmount = 1.0f;
+        float maxGainAmount = 1.5f;
         int numChannels = 4;
 
         // State
