@@ -35,7 +35,7 @@ DualVCAProcessor::~DualVCAProcessor() {}
 void DualVCAProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     // Prepare DSP modules
-    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock) };
+    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
     this->gainProcessorA.prepare(processSpec);
     this->gainProcessorB.prepare(processSpec);
 }

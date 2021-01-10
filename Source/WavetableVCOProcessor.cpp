@@ -46,7 +46,7 @@ void WavetableVCOProcessor::prepareToPlay(double sampleRate, int maximumExpected
     computeWaveTables();
     updateFrequencies(0.0f, 0.0f);
 
-    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock) };
+    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
     this->masterGain.prepare(processSpec);
 }
 

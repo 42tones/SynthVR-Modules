@@ -55,7 +55,7 @@ void SequenceProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamp
     smoothedGlideFilterFrequency.reset(sampleRate, 0.25f);
     smoothedGlideFilterFrequency.setCurrentAndTargetValue(0.0f);
 
-    dsp::ProcessSpec processSpec{ currentSampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
+    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
     glideFilter.prepare(processSpec);
     glideFilter.reset();
     glideFilter.coefficients = calculateGlideFilterCoefficients();

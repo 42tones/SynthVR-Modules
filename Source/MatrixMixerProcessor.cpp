@@ -52,7 +52,7 @@ MatrixMixerProcessor::~MatrixMixerProcessor() {}
 void MatrixMixerProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     // Prepare DSP modules
-    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock) };
+    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
     for (int o = 0; o < numChannels; o++)
         for (int i = 0; i < numChannels; i++)
             this->gainProcessors[o][i].prepare(processSpec);
