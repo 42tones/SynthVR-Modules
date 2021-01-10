@@ -40,7 +40,7 @@ void MultiModeLadderFilter::prepareToPlay(double sampleRate, int maximumExpected
     smoothedResonanceParam.setCurrentAndTargetValue(*resonanceParam);
 
     // Prepare DSP modules
-    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock) };
+    dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
     this->filterProcessor.prepare(processSpec);
     this->filterProcessor.setEnabled(true);
     this->filterProcessor.setMode(static_cast<SingleSampleLadderFilterMode>(currentMode));

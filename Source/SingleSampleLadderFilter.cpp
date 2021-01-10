@@ -45,7 +45,7 @@ template <typename SampleType>
 void SingleSampleLadderFilter<SampleType>::prepare(const dsp::ProcessSpec& spec)
 {
     setSampleRate(SampleType(spec.sampleRate));
-    setNumChannels(std::min(spec.numChannels, (uint32) 1));
+    setNumChannels(std::max(spec.numChannels, (uint32) 1));
     reset();
 }
 
