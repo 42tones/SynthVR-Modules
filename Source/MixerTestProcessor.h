@@ -40,7 +40,7 @@ namespace synthvr
 
         // DSP
         AudioBuffer<float> outputBuffer;
-        float rampDuration = 0.05f;
+        float rampDuration = 0.1f;
         dsp::Gain<float> masterGainProcessor;
         std::vector<dsp::Gain<float>> channelGainProcessors;
 
