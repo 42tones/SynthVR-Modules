@@ -25,4 +25,5 @@ private:
     int samplesPerTick = 0;
     int samplesSinceLastTick = 0;
     int gateLengthSamples = 0;
+    int samplesSinceGateOpened = 0;
 };

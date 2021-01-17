@@ -13,8 +13,8 @@ PrimeTimeProcessor::PrimeTimeProcessor() : BaseProcessor(BusesProperties()
     .withOutput("Output", AudioChannelSet::discreteChannels(8)))
 {
     // Parameters
-    addParameter(bpmParam = new AudioParameterFloat("bpm", "BPM", 10.0f, 200.0f, defaultBPM));
-    addParameter(bpmModAmountParam = new AudioParameterFloat("bpmModAmount", "BPM Modulation Amount", -1.0f, 1.0f, 0.0f));
+    addParameter(bpmParam = new AudioParameterFloat("bpm", "BPM", 50.0f, 200.0f, defaultBPM));
+    addParameter(bpmModAmountParam = new AudioParameterFloat("bpmModAmount", "BPM Modulation Amount", -2.0f, 2.0f, 0.0f));
 
     bpmParam->range.setSkewForCentre(defaultBPM);
     *bpmParam = defaultBPM;
@@ -44,7 +44,7 @@ void PrimeTimeProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
             currentSample = buffer.getSample(extClockInputChannel, sample);
         else
         {
-            clock.setFrequency(buffer.getSample(speedInputChannel, sample));
+            clock.setFrequency(calculateFrequency(buffer.getSample(speedInputChannel, sample)));
             currentSample = clock.processSample(0.0f);
         }
 
@@ -65,5 +65,5 @@ void PrimeTimeProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 
 float synthvr::PrimeTimeProcessor::calculateFrequency(float fmInput)
 {
-    return ParameterUtils::calculateModulationFrequency(*bpmParam / 60.0f * 8.0f, fmInput, *bpmModAmountParam);
+    return ParameterUtils::calculateModulationLinear(*bpmParam / 60.0f * 4.0f, fmInput, *bpmModAmountParam, 0.0f, 400.0f);
 }

@@ -13,7 +13,10 @@ void ClockDivider::setDivisions(int divisions) noexcept
 
 void ClockDivider::reset() noexcept
 {
-    currentTriggerNumber = divisions - 1;
+    currentTriggerNumber = 0;
+    outputGateOpen = false;
+    currentlyTriggered = false;
+    previouslyTriggered = false;
 }
 
 float ClockDivider::processSample(float sample) noexcept
@@ -22,6 +25,10 @@ float ClockDivider::processSample(float sample) noexcept
         return sample;
 
     samplesSinceLastTick++;
+    samplesSinceGateOpened++;
+
+    if (outputGateOpen && samplesSinceGateOpened >= gateLengthSamples)
+        outputGateOpen = false;
 
     currentlyTriggered = sample >= 0.5f;
     if (currentlyTriggered && !previouslyTriggered)
@@ -30,15 +37,13 @@ float ClockDivider::processSample(float sample) noexcept
         if (currentTriggerNumber++ % divisions == 0)
         {
             samplesPerTick = samplesSinceLastTick;
-            gateLengthSamples = samplesPerTick / 2 * divisions;
+            gateLengthSamples = samplesPerTick * divisions / 2;
             outputGateOpen = true;
+            samplesSinceGateOpened = 0;
         }
 
         samplesSinceLastTick = 0;
     }
-
-    if (outputGateOpen && samplesSinceLastTick >= gateLengthSamples)
-        outputGateOpen = false;
 
     previouslyTriggered = currentlyTriggered;
 
