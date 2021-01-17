@@ -6,6 +6,11 @@
   <MAINGROUP id="qVSXRs" name="SynthVR-Native">
     <GROUP id="{9FCFD047-2980-44E1-F2D7-B096F62EFC8D}" name="Source">
       <GROUP id="{BD3F5563-A48F-66BF-7EFC-58943D2399E0}" name="DSP Components">
+        <GROUP id="{583C8869-F865-E608-55A1-7A95FB685399}" name="ClockDivider">
+          <FILE id="S6o1xI" name="ClockDivider.cpp" compile="1" resource="0"
+                file="Source/ClockDivider.cpp"/>
+          <FILE id="Ky7lYw" name="ClockDivider.h" compile="0" resource="0" file="Source/ClockDivider.h"/>
+        </GROUP>
         <GROUP id="{05FD7B91-9DA4-EA0B-A548-2A356407DEEE}" name="CVQuantizer">
           <FILE id="VO4yyP" name="CVQuantizer.cpp" compile="1" resource="0" file="Source/CVQuantizer.cpp"/>
           <FILE id="sWFxxs" name="CVQuantizer.h" compile="0" resource="0" file="Source/CVQuantizer.h"/>
@@ -64,6 +69,12 @@
           </GROUP>
         </GROUP>
         <GROUP id="{E4209ED2-3C88-F93F-4E33-386E6AA19335}" name="Prime">
+          <GROUP id="{24EFB7D6-E336-345E-3329-CE84B4ACBD34}" name="Time">
+            <FILE id="ZXgSKE" name="PrimeTimeProcessor.cpp" compile="1" resource="0"
+                  file="Source/PrimeTimeProcessor.cpp"/>
+            <FILE id="Emd7ZM" name="PrimeTimeProcessor.h" compile="0" resource="0"
+                  file="Source/PrimeTimeProcessor.h"/>
+          </GROUP>
           <GROUP id="{04084843-B15A-44F2-1205-083DEA542AE2}" name="Mix">
             <FILE id="eVBKQn" name="MatrixMixerProcessor.cpp" compile="1" resource="0"
                   file="Source/MatrixMixerProcessor.cpp"/>
