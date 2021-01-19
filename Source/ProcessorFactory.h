@@ -37,6 +37,7 @@
 #include "DualVCAProcessor.h"
 #include "MatrixMixerProcessor.h"
 #include "PrimeTimeProcessor.h"
+#include "DeviceInputProcessor.h"
 
 using Node = AudioProcessorGraph::Node;
 using NodeID = AudioProcessorGraph::NodeID;
@@ -67,7 +68,8 @@ namespace synthvr
             SequenceProcessor = 18,
             DualVCAProcessor = 19,
             MatrixMixerProcessor = 20,
-            PrimeTimeProcessor = 21
+            PrimeTimeProcessor = 21,
+            DeviceInputProcessor = 22
         };
         
         enum ParameterType { Continuous = 0, Discrete = 1, Boolean = 2 };
@@ -141,6 +143,9 @@ namespace synthvr
 
                 case ProcessorID::PrimeTimeProcessor:
                     return reinterpret_cast<BaseProcessor*>(new class PrimeTimeProcessor());
+
+                case ProcessorID::DeviceInputProcessor:
+                    return reinterpret_cast<BaseProcessor*>(new class DeviceInputProcessor());
 
                 default:
                     return reinterpret_cast<BaseProcessor *>(new class SingleChannelTestProcessor());

@@ -30,6 +30,8 @@
       <GROUP id="{06EDF44F-1FA1-95A6-DD13-24F85E3EB545}" name="Utilities">
         <FILE id="rgFget" name="ParameterUtils.h" compile="0" resource="0"
               file="Source/ParameterUtils.h"/>
+        <FILE id="XEAbfL" name="StoreChannelAudioCallback.h" compile="0" resource="0"
+              file="Source/StoreChannelAudioCallback.h"/>
       </GROUP>
       <GROUP id="{42F2B79D-7F3F-EA2C-373B-636993A10964}" name="Includes">
         <FILE id="xcf5Hz" name="json.hpp" compile="0" resource="0" file="Source/json.hpp"/>
@@ -42,6 +44,12 @@
               file="Source/ProcessorAPIUtilities.h"/>
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
+        <GROUP id="{BE696C9F-6FC6-0F49-7291-9511FE8544AD}" name="Utilities">
+          <FILE id="k6SEH0" name="DeviceInputProcessor.cpp" compile="1" resource="0"
+                file="Source/DeviceInputProcessor.cpp"/>
+          <FILE id="p6fvGo" name="DeviceInputProcessor.h" compile="0" resource="0"
+                file="Source/DeviceInputProcessor.h"/>
+        </GROUP>
         <GROUP id="{8A8A2167-2F46-A5BE-4568-5D7A62CD8337}" name="Just">
           <GROUP id="{8E71CB5F-93A4-E348-3B28-3773BD1217FC}" name="Amp">
             <FILE id="My7EN7" name="DualVCAProcessor.cpp" compile="1" resource="0"
