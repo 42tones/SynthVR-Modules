@@ -9,7 +9,7 @@
 using namespace synthvr;
 
 DeviceInputProcessor::DeviceInputProcessor() : BaseProcessor(BusesProperties()
-    .withInput("Inputs", AudioChannelSet::discreteChannels(0))
+    .withInput("Inputs", AudioChannelSet::discreteChannels(1))
     .withOutput("Output", AudioChannelSet::discreteChannels(1)))
 {
     deviceManager.initialiseWithDefaultDevices(1, 0);
@@ -19,7 +19,10 @@ DeviceInputProcessor::DeviceInputProcessor() : BaseProcessor(BusesProperties()
     // addParameter(gainAmountA = new AudioParameterFloat("gainA", "Gain A", -0.1f, maxGainAmount, 1.0f));
 }
 
-DeviceInputProcessor::~DeviceInputProcessor() {}
+DeviceInputProcessor::~DeviceInputProcessor() 
+{
+    deviceManager.removeAudioCallback(&callback);
+}
 
 void DeviceInputProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {

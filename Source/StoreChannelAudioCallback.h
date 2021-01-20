@@ -25,7 +25,7 @@ public:
     void audioDeviceAboutToStart(AudioIODevice* device)
     {
         currentBufferSize = device->getCurrentBufferSizeSamples();
-        internalBuffer = AudioBuffer<float>(0, currentBufferSize);
+        internalBuffer = AudioBuffer<float>(1, currentBufferSize);
     }
 
     void audioDeviceStopped()
