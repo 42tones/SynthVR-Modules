@@ -16,7 +16,7 @@ FreeverbProcessor::FreeverbProcessor() : BaseProcessor(BusesProperties()
     addParameter(roomSizeModulationAmountParam = new AudioParameterFloat("roomSizeModulationAmount", "The amount of modulation to apply.", -1.0f, 1.0f, 0.0f));
     addParameter(dampingParam = new AudioParameterFloat ("damping", "The amount of damping to use.", 0.0f, 1.0f, 0.4f));
     addParameter(widthParam = new AudioParameterFloat ("width", "The stereo width of the reverb.", 0.0f, 1.0f, 1.0f));
-    addParameter(mixParam = new AudioParameterFloat ("mix", "The mix between dry and wet signal.", 0.0f, 1.0f, 1.0f));
+    addParameter(mixParam = new AudioParameterFloat ("mix", "The mix between dry and wet signal.", 0.0f, 1.0f, 0.5f));
     addParameter(mixModulationAmountParam = new AudioParameterFloat("mixModulationAmount", "The amount of modulation to apply.", -1.0f, 1.0f, 0.0f));
     addParameter(freezeParam = new AudioParameterBool("freeze", "When on, freezes the reverb.", false));
     addParameter(freezeDisplay = new AudioParameterFloat("freezeDisplay", "Displays the result of freeze button + signal.", 0.0f, 1.0f, 0.0f));
