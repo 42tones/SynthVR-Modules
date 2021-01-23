@@ -58,7 +58,7 @@ namespace synthvr
         // Frequency related vars
         float freqToSet = 110.0f;
         float baseFrequency = 110.0f;
-        int coarseTuneRange = 24;
+        int coarseTuneRange = 12;
         float detuneRange = 0.5f;
         double sampleRate = 44100;
 
