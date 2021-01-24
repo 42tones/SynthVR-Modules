@@ -13,11 +13,11 @@ EnvelopeGeneratorProcessor::EnvelopeGeneratorProcessor() : BaseProcessor(BusesPr
         .withOutput ("Output", AudioChannelSet::discreteChannels(1)))
 {
     // Parameters
-    addParameter(attack = new AudioParameterFloat ("attack", "Attack time in seconds.", minValue, 1.0f, 0.3f));
+    addParameter(attack = new AudioParameterFloat ("attack", "Attack time in seconds.", minValue, 1.0f, 0.0f));
     addParameter(decay = new AudioParameterFloat ("decay", "Decay time in seconds.", minValue, 1.0f, 0.3f));
     addParameter(sustain = new AudioParameterFloat ("sustain", "Sustain level.", 0.0f, 1.0f, 0.5f));
     addParameter(release = new AudioParameterFloat ("release", "Release time in seconds.", minValue, 1.0f, 0.3f));
-    addParameter(speed = new AudioParameterFloat ("speed", "Max speed of envelope.", 1.0f, 8.0f, 4.0f));
+    addParameter(speed = new AudioParameterFloat ("speed", "Max speed of envelope.", 0.5f, 4.0f, 1.0f));
     addParameter(outputDisplay = new AudioParameterFloat ("outputDisplay", "Displays envelope output.", 0.0f, 1.0f, 0.0f));
 
     attack->range.setSkewForCentre(defaultCenterValue);

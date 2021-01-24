@@ -13,7 +13,7 @@ AmplifierTestProcessor::AmplifierTestProcessor() : BaseProcessor(BusesProperties
         .withOutput ("Output", AudioChannelSet::discreteChannels(3)))
 {
     // Parameters
-    addParameter(gainAmount = new AudioParameterFloat ("gainAmount", "The amount of gain to use.", 0.0f, 1.0f, 0.5f));
+    addParameter(gainAmount = new AudioParameterFloat ("gainAmount", "The amount of gain to use.", 0.0f, 2.0f, 1.0f));
     addParameter(cvAmount = new AudioParameterFloat ("cvAmount", "The amount of CV to apply to gain.", 0.0f, 1.0f, 0.5f));
 
     // DSP

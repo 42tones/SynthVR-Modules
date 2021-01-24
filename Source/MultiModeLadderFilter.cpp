@@ -12,8 +12,8 @@ MultiModeLadderFilter::MultiModeLadderFilter() : BaseProcessor(BusesProperties()
     addParameter(frequencyParam = new AudioParameterFloat("frequency", "The frequency of the filter.", minFrequency, maxFrequency, 3000.0f));
     addParameter(frequencyModulationAAmountParam = new AudioParameterFloat("frequencyModulationAAmount", "The amount to modulate the filter frequency.", -1.0f, 1.0f, 0.0f));
     addParameter(frequencyModulationBAmountParam = new AudioParameterFloat("frequencyModulationBAmount", "The amount to modulate the filter frequency.", -1.0f, 1.0f, 0.0f));
-    addParameter(resonanceParam = new AudioParameterFloat("resonance", "The resonance of the filter.", minResonance, maxResonance, 0.25f));
-    addParameter(driveParam = new AudioParameterFloat("drive", "The saturation of the filter.", 1.0f, maxDrive, 1.3f));
+    addParameter(resonanceParam = new AudioParameterFloat("resonance", "The resonance of the filter.", minResonance, maxResonance, 0.0f));
+    addParameter(driveParam = new AudioParameterFloat("drive", "The saturation of the filter.", 1.0f, maxDrive, 1.0f));
     addParameter(modeParam = new AudioParameterInt("mode", "The filtering mode to use.", 0, 2, 0));
     addParameter(rollOffParam = new AudioParameterBool("rollOff", "Whether to use 12dB/oct filter rolloff or 24db/oct.", true));
     addParameter(frequencyDisplay = new AudioParameterFloat("frequencyDisplay", "Displays the current normalized frequency value.", minFrequency, maxFrequency, 3000.0f));
