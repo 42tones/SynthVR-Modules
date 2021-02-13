@@ -52,7 +52,7 @@ void SequenceProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamp
 {
     currentSampleRate = sampleRate;
 
-    smoothedGlideFilterFrequency.reset(sampleRate, 0.25f);
+    smoothedGlideFilterFrequency.reset(sampleRate, 0.4f);
     smoothedGlideFilterFrequency.setCurrentAndTargetValue(0.0f);
 
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
@@ -68,6 +68,7 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     // Skip execution if all steps are skipped
     allStepsAreSkipped = areAllStepsSkipped();
 
+    currentlyRunning = *currentlyRunningDisplay;
     if (*toggleRunningParam && !previouslyToggledRunning)
         currentlyRunning = !currentlyRunning;
 
@@ -90,16 +91,11 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
         // Handle gate closing
         updateGate();
 
-        // Handle glide
+        // Handle pitch
         currentGlideFilterFrequency = smoothedGlideFilterFrequency.getNextValue();
         glideFilter.coefficients = calculateGlideFilterCoefficients();
-
-        // Handle pitch
-        if (currentGateOpen)
-        {
-            handleScaleUpdate();
-            updatePitch();
-        }
+        handleScaleUpdate();
+        updatePitch();
 
         // Write to buffer
         writeOutputs(buffer, sample);
@@ -291,7 +287,7 @@ float SequenceProcessor::getGateLengthForMode(int mode)
     if (mode == singlePulse || mode == multiPulse)
         return (float)samplesPerPulse * *gateLengthParam;
     else if (mode == holdForPulse)
-        return (float)samplesPerPulse * getNumPulsesForStep(currentStep) * 0.99f;
+        return (float)(samplesPerPulse * getNumPulsesForStep(currentStep)) * 0.95f;
     else
         return 0.0f;
 }
