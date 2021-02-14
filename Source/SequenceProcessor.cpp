@@ -185,6 +185,7 @@ void SequenceProcessor::handleNewClockTrigger()
     if (currentlyRunning)
     {
         samplesSinceLastGate = 0;
+        samplesSinceLastTriggerDisplay = 0;
         auto gateMode = getGateModeForStep(currentStep);
 
         if (currentPulse == 0 || gateMode == multiPulse)
@@ -242,7 +243,7 @@ void SequenceProcessor::updateGate()
     // Close trigger display if enough samples have passed
     if (currentTriggerDisplayOpen
         && (float)samplesSinceLastTriggerDisplay++ >= currentTriggerDisplayLengthSamples)
-        currentGateOpen = false;
+        currentTriggerDisplayOpen = false;
 }
 
 bool SequenceProcessor::getOnOffStatusForStep(int step)
