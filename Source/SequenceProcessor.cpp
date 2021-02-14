@@ -41,7 +41,7 @@ SequenceProcessor::SequenceProcessor() : BaseProcessor(BusesProperties()
     addParameter(currentStepDisplay = new AudioParameterInt("currentStepDisplay", "Current Step Display", 0, numSteps, 0));
     addParameter(currentlyTriggeredDisplay = new AudioParameterBool("currentlyTriggeredDisplay", "Currently Triggered Display", false));
     addParameter(currentlyEOSTriggeredDisplay = new AudioParameterBool("currentlyEOSTriggeredDisplay", "Currently EOS Triggered Display", false));
-    addParameter(currentlyRunningDisplay = new AudioParameterBool("currentlyRunningDisplay", "Currently Running Display", false));
+    addParameter(currentlyRunningDisplay = new AudioParameterBool("currentlyRunningDisplay", "Currently Running Display", true));
 
     glideParam->range.setSkewForCentre(0.9f);
 }
@@ -122,7 +122,7 @@ void synthvr::SequenceProcessor::writeOutputs(juce::AudioSampleBuffer& buffer, i
     {
         buffer.setSample(triggerOutputChannel, sample, currentGateOpen);
         buffer.setSample(pitchOutputChannel, sample, currentPitch);
-        *currentlyTriggeredDisplay = currentGateOpen;
+        *currentlyTriggeredDisplay = currentTriggerDisplayOpen;
     }
     else
     {
@@ -190,7 +190,9 @@ void SequenceProcessor::handleNewClockTrigger()
         if (currentPulse == 0 || gateMode == multiPulse)
         {
             currentGateLengthSamples = getGateLengthForMode(gateMode);
+            currentTriggerDisplayLengthSamples = std::min(currentGateLengthSamples, minTriggerDisplayLengthSamples);
             currentGateOpen = gateMode != silence;
+            currentTriggerDisplayOpen = currentGateOpen;
         }
 
         currentStepPitch = getPitchForStep(currentStep);
@@ -236,6 +238,11 @@ void SequenceProcessor::updateGate()
     if (currentEndOfSequenceGateOpen 
         && (float)samplesSinceLastEndOfSequenceGate++ >= currentEndOfSequenceGateLengthSamples)
             currentEndOfSequenceGateOpen = false;
+
+    // Close trigger display if enough samples have passed
+    if (currentTriggerDisplayOpen
+        && (float)samplesSinceLastTriggerDisplay++ >= currentTriggerDisplayLengthSamples)
+        currentGateOpen = false;
 }
 
 bool SequenceProcessor::getOnOffStatusForStep(int step)
