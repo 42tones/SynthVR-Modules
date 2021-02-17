@@ -184,19 +184,21 @@ void SequenceProcessor::handleNewClockTrigger()
     // Handle gate, get target pitch and increment pulse
     if (currentlyRunning)
     {
-        samplesSinceLastGate = 0;
-        samplesSinceLastTriggerDisplay = 0;
         auto gateMode = getGateModeForStep(currentStep);
 
         if (currentPulse == 0 || gateMode == multiPulse)
         {
+            samplesSinceLastGate = 0;
+            samplesSinceLastTriggerDisplay = 0;
+            
             currentGateLengthSamples = getGateLengthForMode(gateMode);
-            currentTriggerDisplayLengthSamples = std::min(currentGateLengthSamples, minTriggerDisplayLengthSamples);
+            currentTriggerDisplayLengthSamples = std::max(currentGateLengthSamples, minTriggerDisplayLengthSamples);
             currentGateOpen = gateMode != silence;
             currentTriggerDisplayOpen = currentGateOpen;
+
+            currentStepPitch = getPitchForStep(currentStep);
         }
 
-        currentStepPitch = getPitchForStep(currentStep);
         currentPulse++;
     }
 }

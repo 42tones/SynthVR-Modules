@@ -76,7 +76,7 @@ namespace synthvr
         int numSteps = 8;
         float fullGlideFrequency = 50.0f;
         float noGlideFrequency = 1000.0f;
-        float minTriggerDisplayLengthSamples = 500.0f;
+        float minTriggerDisplayLengthSamples = 5000.0f;
 
         // General state
         double currentSampleRate = 100.0f;
