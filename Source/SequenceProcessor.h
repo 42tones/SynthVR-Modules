@@ -76,6 +76,7 @@ namespace synthvr
         int numSteps = 8;
         float fullGlideFrequency = 50.0f;
         float noGlideFrequency = 1000.0f;
+        float minTriggerDisplayLengthSamples = 5000.0f;
 
         // General state
         double currentSampleRate = 100.0f;
@@ -98,10 +99,13 @@ namespace synthvr
         // Gate state
         float currentGateLengthSamples = 0.0f;
         float currentEndOfSequenceGateLengthSamples = 0.0f;
+        float currentTriggerDisplayLengthSamples = 0.0f;
         int samplesSinceLastGate = 0;
         int samplesSinceLastEndOfSequenceGate = 0;
+        int samplesSinceLastTriggerDisplay = 0;
         bool currentGateOpen = false;
         bool currentEndOfSequenceGateOpen = false;
+        bool currentTriggerDisplayOpen = false;
 
         // Pitch state
         float currentPitch = 0.0f;

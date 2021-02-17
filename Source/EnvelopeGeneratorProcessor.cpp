@@ -15,17 +15,17 @@ EnvelopeGeneratorProcessor::EnvelopeGeneratorProcessor() : BaseProcessor(BusesPr
     // Parameters
     addParameter(attack = new AudioParameterFloat ("attack", "Attack time in seconds.", minValue, 1.0f, 0.0f));
     addParameter(decay = new AudioParameterFloat ("decay", "Decay time in seconds.", minValue, 1.0f, 0.3f));
-    addParameter(sustain = new AudioParameterFloat ("sustain", "Sustain level.", 0.0f, 1.0f, 0.5f));
+    addParameter(sustain = new AudioParameterFloat ("sustain", "Sustain level.", 0.0f, 1.0f, 0.1f));
     addParameter(release = new AudioParameterFloat ("release", "Release time in seconds.", minValue, 1.0f, 0.3f));
     addParameter(speed = new AudioParameterFloat ("speed", "Max speed of envelope.", 0.5f, 4.0f, 1.0f));
     addParameter(outputDisplay = new AudioParameterFloat ("outputDisplay", "Displays envelope output.", 0.0f, 1.0f, 0.0f));
 
     attack->range.setSkewForCentre(defaultCenterValue);
-    *attack = defaultCenterValue;
+    *attack = 0.1f;
     decay->range.setSkewForCentre(defaultCenterValue);
-    *decay = defaultCenterValue;
+    *decay = 0.1f;
     release->range.setSkewForCentre(defaultCenterValue);
-    *release = defaultCenterValue;
+    *release = 0.1f;
 }
 
 EnvelopeGeneratorProcessor::~EnvelopeGeneratorProcessor() {}

@@ -41,7 +41,7 @@ SequenceProcessor::SequenceProcessor() : BaseProcessor(BusesProperties()
     addParameter(currentStepDisplay = new AudioParameterInt("currentStepDisplay", "Current Step Display", 0, numSteps, 0));
     addParameter(currentlyTriggeredDisplay = new AudioParameterBool("currentlyTriggeredDisplay", "Currently Triggered Display", false));
     addParameter(currentlyEOSTriggeredDisplay = new AudioParameterBool("currentlyEOSTriggeredDisplay", "Currently EOS Triggered Display", false));
-    addParameter(currentlyRunningDisplay = new AudioParameterBool("currentlyRunningDisplay", "Currently Running Display", false));
+    addParameter(currentlyRunningDisplay = new AudioParameterBool("currentlyRunningDisplay", "Currently Running Display", true));
 
     glideParam->range.setSkewForCentre(0.9f);
 }
@@ -52,7 +52,7 @@ void SequenceProcessor::prepareToPlay(double sampleRate, int maximumExpectedSamp
 {
     currentSampleRate = sampleRate;
 
-    smoothedGlideFilterFrequency.reset(sampleRate, 0.25f);
+    smoothedGlideFilterFrequency.reset(sampleRate, 0.4f);
     smoothedGlideFilterFrequency.setCurrentAndTargetValue(0.0f);
 
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
@@ -68,6 +68,7 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     // Skip execution if all steps are skipped
     allStepsAreSkipped = areAllStepsSkipped();
 
+    currentlyRunning = *currentlyRunningDisplay;
     if (*toggleRunningParam && !previouslyToggledRunning)
         currentlyRunning = !currentlyRunning;
 
@@ -90,16 +91,11 @@ void SequenceProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
         // Handle gate closing
         updateGate();
 
-        // Handle glide
+        // Handle pitch
         currentGlideFilterFrequency = smoothedGlideFilterFrequency.getNextValue();
         glideFilter.coefficients = calculateGlideFilterCoefficients();
-
-        // Handle pitch
-        if (currentGateOpen)
-        {
-            handleScaleUpdate();
-            updatePitch();
-        }
+        handleScaleUpdate();
+        updatePitch();
 
         // Write to buffer
         writeOutputs(buffer, sample);
@@ -126,7 +122,7 @@ void synthvr::SequenceProcessor::writeOutputs(juce::AudioSampleBuffer& buffer, i
     {
         buffer.setSample(triggerOutputChannel, sample, currentGateOpen);
         buffer.setSample(pitchOutputChannel, sample, currentPitch);
-        *currentlyTriggeredDisplay = currentGateOpen;
+        *currentlyTriggeredDisplay = currentTriggerDisplayOpen;
     }
     else
     {
@@ -188,16 +184,21 @@ void SequenceProcessor::handleNewClockTrigger()
     // Handle gate, get target pitch and increment pulse
     if (currentlyRunning)
     {
-        samplesSinceLastGate = 0;
         auto gateMode = getGateModeForStep(currentStep);
 
         if (currentPulse == 0 || gateMode == multiPulse)
         {
+            samplesSinceLastGate = 0;
+            samplesSinceLastTriggerDisplay = 0;
+            
             currentGateLengthSamples = getGateLengthForMode(gateMode);
+            currentTriggerDisplayLengthSamples = std::max(currentGateLengthSamples, minTriggerDisplayLengthSamples);
             currentGateOpen = gateMode != silence;
+            currentTriggerDisplayOpen = currentGateOpen;
+
+            currentStepPitch = getPitchForStep(currentStep);
         }
 
-        currentStepPitch = getPitchForStep(currentStep);
         currentPulse++;
     }
 }
@@ -240,6 +241,11 @@ void SequenceProcessor::updateGate()
     if (currentEndOfSequenceGateOpen 
         && (float)samplesSinceLastEndOfSequenceGate++ >= currentEndOfSequenceGateLengthSamples)
             currentEndOfSequenceGateOpen = false;
+
+    // Close trigger display if enough samples have passed
+    if (currentTriggerDisplayOpen
+        && (float)samplesSinceLastTriggerDisplay++ >= currentTriggerDisplayLengthSamples)
+        currentTriggerDisplayOpen = false;
 }
 
 bool SequenceProcessor::getOnOffStatusForStep(int step)
@@ -291,7 +297,7 @@ float SequenceProcessor::getGateLengthForMode(int mode)
     if (mode == singlePulse || mode == multiPulse)
         return (float)samplesPerPulse * *gateLengthParam;
     else if (mode == holdForPulse)
-        return (float)samplesPerPulse * getNumPulsesForStep(currentStep) * 0.99f;
+        return (float)(samplesPerPulse * getNumPulsesForStep(currentStep)) * 0.95f;
     else
         return 0.0f;
 }
