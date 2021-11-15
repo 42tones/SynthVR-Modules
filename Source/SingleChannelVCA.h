@@ -15,15 +15,15 @@ using namespace juce;
 
 namespace synthvr
 {
-    class Lasses_Sweet_Test_Module : public BaseProcessor {
+    class SingleChannelVCA : public BaseProcessor {
     public:
-        Lasses_Sweet_Test_Module();
-        ~Lasses_Sweet_Test_Module();
+        SingleChannelVCA();
+        ~SingleChannelVCA();
 
         void prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) override;
         void processBlock(AudioBuffer<float>& buffer, MidiBuffer&) override;
         //==============================================================================
-        const String getName() const override { return "Lasses_Sweet_Test_Module"; }
+        const String getName() const override { return "SingleChannelVCA"; }
 
     private:
         float normalizeGainCVInput(float sampleAmplitude);
@@ -46,6 +46,6 @@ namespace synthvr
         };
 
         //==============================================================================
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lasses_Sweet_Test_Module)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SingleChannelVCA)
     };
 }

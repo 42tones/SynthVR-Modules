@@ -24,8 +24,7 @@
 #include "MixerTestProcessor.h"
 #include "VelocityTrackingProcessor.h"
 #include "CVQuantizerTestProcessor.h"
-#include "Lasses_Sweet_Test_Module.h"
-#include "BitRedux.h"
+#include "SingleChannelVCA.h"
 
 // Release ready modules
 #include "WavetableVCOProcessor.h"
@@ -70,8 +69,7 @@ namespace synthvr
             DualVCAProcessor = 19,
             MatrixMixerProcessor = 20,
             PrimeTimeProcessor = 21,
-            Lasses_Sweet_Test_Module = 22,
-            BitRedux = 23
+            SingleChannelVCA = 22
         };
         
         enum ParameterType { Continuous = 0, Discrete = 1, Boolean = 2 };
@@ -146,11 +144,8 @@ namespace synthvr
                 case ProcessorID::PrimeTimeProcessor:
                     return reinterpret_cast<BaseProcessor*>(new class PrimeTimeProcessor());
 
-                case ProcessorID::Lasses_Sweet_Test_Module:
-                    return reinterpret_cast<BaseProcessor*>(new class Lasses_Sweet_Test_Module());
-                
-                case ProcessorID::BitRedux:
-                    return reinterpret_cast<BaseProcessor*>(new class BitRedux());
+                case ProcessorID::SingleChannelVCA:
+                    return reinterpret_cast<BaseProcessor*>(new class SingleChannelVCA());
 
                 default:
                     return reinterpret_cast<BaseProcessor *>(new class SingleChannelTestProcessor());

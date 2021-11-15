@@ -5,11 +5,11 @@
   ==============================================================================
 */
 
-#include "Lasses_Sweet_Test_Module.h"
+#include "SingleChannelVCA.h"
 
 using namespace synthvr;
 
-Lasses_Sweet_Test_Module::Lasses_Sweet_Test_Module() : BaseProcessor(BusesProperties()
+SingleChannelVCA::SingleChannelVCA() : BaseProcessor(BusesProperties()
     .withInput("Inputs", AudioChannelSet::discreteChannels(2))
     .withOutput("Output", AudioChannelSet::discreteChannels(1)))
 {
@@ -26,9 +26,9 @@ Lasses_Sweet_Test_Module::Lasses_Sweet_Test_Module() : BaseProcessor(BusesProper
 
 
 
-Lasses_Sweet_Test_Module::~Lasses_Sweet_Test_Module() {}
+SingleChannelVCA::~SingleChannelVCA() {}
 
-void Lasses_Sweet_Test_Module::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
+void SingleChannelVCA::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock) };
     this->gain.prepare(processSpec);
@@ -37,7 +37,7 @@ void Lasses_Sweet_Test_Module::prepareToPlay(double sampleRate, int maximumExpec
     smoothedGainCVAmountParam.setCurrentAndTargetValue(*gainCVAmountParam);
 }
 
-void Lasses_Sweet_Test_Module::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
+void SingleChannelVCA::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
 {
     if (isInputConnected[inputChannel]) 
     {
@@ -74,7 +74,7 @@ void Lasses_Sweet_Test_Module::processBlock(AudioBuffer<float>& buffer, MidiBuff
     }
 }
 
-float Lasses_Sweet_Test_Module::normalizeGainCVInput(float sampleAmplitude)
+float SingleChannelVCA::normalizeGainCVInput(float sampleAmplitude)
 {
     return  ParameterUtils::clamp((sampleAmplitude + 1.0f) * 0.5, 0.0f, 1.0f);
 }

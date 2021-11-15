@@ -47,10 +47,10 @@
           <FILE id="yK74i1" name="BitRedux.h" compile="0" resource="0" file="Source/BitRedux.h"/>
         </GROUP>
         <GROUP id="{BE696C9F-6FC6-0F49-7291-9511FE8544AD}" name="Lasses Sweet Modules">
-          <FILE id="wmGe5u" name="Lasses_Sweet_Test_Module.cpp" compile="1" resource="0"
-                file="Source/Lasses_Sweet_Test_Module.cpp"/>
-          <FILE id="PBUbze" name="Lasses_Sweet_Test_Module.h" compile="0" resource="0"
-                file="Source/Lasses_Sweet_Test_Module.h"/>
+          <FILE id="wmGe5u" name="SingleChannelVCA.cpp" compile="1" resource="0"
+                file="Source/SingleChannelVCA.cpp"/>
+          <FILE id="PBUbze" name="SingleChannelVCA.h" compile="0" resource="0"
+                file="Source/SingleChannelVCA.h"/>
         </GROUP>
         <GROUP id="{8A8A2167-2F46-A5BE-4568-5D7A62CD8337}" name="Just">
           <GROUP id="{8E71CB5F-93A4-E348-3B28-3773BD1217FC}" name="Amp">
