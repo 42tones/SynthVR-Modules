@@ -24,6 +24,7 @@
 #include "MixerTestProcessor.h"
 #include "VelocityTrackingProcessor.h"
 #include "CVQuantizerTestProcessor.h"
+#include "SingleChannelVCA.h"
 
 // Release ready modules
 #include "WavetableVCOProcessor.h"
@@ -67,7 +68,8 @@ namespace synthvr
             SequenceProcessor = 18,
             DualVCAProcessor = 19,
             MatrixMixerProcessor = 20,
-            PrimeTimeProcessor = 21
+            PrimeTimeProcessor = 21,
+            SingleChannelVCA = 22
         };
         
         enum ParameterType { Continuous = 0, Discrete = 1, Boolean = 2 };
@@ -141,6 +143,9 @@ namespace synthvr
 
                 case ProcessorID::PrimeTimeProcessor:
                     return reinterpret_cast<BaseProcessor*>(new class PrimeTimeProcessor());
+
+                case ProcessorID::SingleChannelVCA:
+                    return reinterpret_cast<BaseProcessor*>(new class SingleChannelVCA());
 
                 default:
                     return reinterpret_cast<BaseProcessor *>(new class SingleChannelTestProcessor());
