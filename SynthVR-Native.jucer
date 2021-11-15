@@ -42,11 +42,7 @@
               file="Source/ProcessorAPIUtilities.h"/>
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
-        <GROUP id="{35DE8CB3-7CE6-7E13-8130-E072DE0E31B7}" name="BitRedux">
-          <FILE id="Kv8VCR" name="BitRedux.cpp" compile="1" resource="0" file="Source/BitRedux.cpp"/>
-          <FILE id="yK74i1" name="BitRedux.h" compile="0" resource="0" file="Source/BitRedux.h"/>
-        </GROUP>
-        <GROUP id="{BE696C9F-6FC6-0F49-7291-9511FE8544AD}" name="Lasses Sweet Modules">
+        <GROUP id="{BE696C9F-6FC6-0F49-7291-9511FE8544AD}" name="Utilities">
           <FILE id="wmGe5u" name="SingleChannelVCA.cpp" compile="1" resource="0"
                 file="Source/SingleChannelVCA.cpp"/>
           <FILE id="PBUbze" name="SingleChannelVCA.h" compile="0" resource="0"
