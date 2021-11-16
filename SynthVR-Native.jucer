@@ -43,6 +43,10 @@
       </GROUP>
       <GROUP id="{2C78AE7D-EE4E-0F9F-C542-1D2EBDBBAAE8}" name="Processors">
         <GROUP id="{BE696C9F-6FC6-0F49-7291-9511FE8544AD}" name="Utilities">
+          <FILE id="OiOspd" name="HighpassLowpassStereo.cpp" compile="1" resource="0"
+                file="Source/HighpassLowpassStereo.cpp"/>
+          <FILE id="DJrAz8" name="HighpassLowpassStereo.h" compile="0" resource="0"
+                file="Source/HighpassLowpassStereo.h"/>
           <FILE id="wmGe5u" name="SingleChannelVCA.cpp" compile="1" resource="0"
                 file="Source/SingleChannelVCA.cpp"/>
           <FILE id="PBUbze" name="SingleChannelVCA.h" compile="0" resource="0"
