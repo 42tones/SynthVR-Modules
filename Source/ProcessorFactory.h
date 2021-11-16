@@ -25,6 +25,7 @@
 #include "VelocityTrackingProcessor.h"
 #include "CVQuantizerTestProcessor.h"
 #include "SingleChannelVCA.h"
+#include "HighpassLowpassStereo.h"
 
 // Release ready modules
 #include "WavetableVCOProcessor.h"
@@ -69,7 +70,8 @@ namespace synthvr
             DualVCAProcessor = 19,
             MatrixMixerProcessor = 20,
             PrimeTimeProcessor = 21,
-            SingleChannelVCA = 22
+            SingleChannelVCA = 22,
+            HighpassLowpassStereo = 23
         };
         
         enum ParameterType { Continuous = 0, Discrete = 1, Boolean = 2 };
@@ -145,7 +147,10 @@ namespace synthvr
                     return reinterpret_cast<BaseProcessor*>(new class PrimeTimeProcessor());
 
                 case ProcessorID::SingleChannelVCA:
-                    return reinterpret_cast<BaseProcessor*>(new class SingleChannelVCA());
+                    return reinterpret_cast<BaseProcessor*>(new class SingleChannelVCA()); 
+                
+                case ProcessorID::HighpassLowpassStereo:
+                    return reinterpret_cast<BaseProcessor*>(new class HighpassLowpassStereo());
 
                 default:
                     return reinterpret_cast<BaseProcessor *>(new class SingleChannelTestProcessor());

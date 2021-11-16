@@ -27,8 +27,6 @@ HighpassLowpassStereo::HighpassLowpassStereo() : BaseProcessor(BusesProperties()
     resonanceParam->range.skew = 1.5f;
 }
 
-
-
 HighpassLowpassStereo::~HighpassLowpassStereo() {}
 
 void HighpassLowpassStereo::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
