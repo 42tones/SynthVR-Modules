@@ -63,9 +63,9 @@ void UtilityFilter::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
         {
             this->filterRight.coefficients = currentCoefficients;
             buffer.setSample(
-                outputLeft,
+                outputRight,
                 sample,
-                this->filterLeft.processSample(buffer.getSample(inputLeft, sample)));
+                this->filterRight.processSample(buffer.getSample(inputRight, sample)));
         }
     }
 }
