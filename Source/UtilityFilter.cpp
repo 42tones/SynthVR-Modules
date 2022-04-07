@@ -7,7 +7,7 @@ UtilityFilter::UtilityFilter() : BaseProcessor(BusesProperties()
     .withOutput("Output", AudioChannelSet::discreteChannels(2)))
 {
     addParameter(colorParam = new AudioParameterFloat("frequency", "The frequency of the filter.", -1.0f, 1.0f, 0.0f));
-    addParameter(resonanceParam = new AudioParameterFloat("resonance", "The resonance of the filter.", 0.0f, 0.99f, 0.0f));
+    addParameter(resonanceParam = new AudioParameterFloat("resonance", "The resonance of the filter.", 0.2f, 2.0f, 0.0f));
 
     resonanceParam->range.skew = 1.5f;
 }
@@ -28,12 +28,19 @@ void UtilityFilter::prepareToPlay(double sampleRate, int maximumExpectedSamplesP
     // Prepare DSP modules
     dsp::ProcessSpec processSpec{ sampleRate, static_cast<uint32> (maximumExpectedSamplesPerBlock), 1 };
 
-    this->filterLeft.prepare(processSpec);
-    this->filterLeft.reset();
-    this->filterLeft.coefficients = calculateFilterCoefficientsFromColor(*colorParam);
-    this->filterRight.prepare(processSpec);
-    this->filterRight.reset();
-    this->filterRight.coefficients = calculateFilterCoefficientsFromColor(*colorParam);
+    this->lowpassLeft.prepare(processSpec);
+    this->lowpassLeft.reset();
+    this->lowpassLeft.coefficients = calculateLowpassCoefficients(*colorParam, *resonanceParam);
+    this->lowpassRight.prepare(processSpec);
+    this->lowpassRight.reset();
+    this->lowpassRight.coefficients = calculateLowpassCoefficients(*colorParam, *resonanceParam);
+
+    this->highpassLeft.prepare(processSpec);
+    this->highpassLeft.reset();
+    this->highpassLeft.coefficients = calculateHighpassCoefficients(*colorParam, *resonanceParam);
+    this->highpassRight.prepare(processSpec);
+    this->highpassRight.reset();
+    this->highpassRight.coefficients = calculateHighpassCoefficients(*colorParam, *resonanceParam);
 
 }
 
@@ -44,40 +51,58 @@ void UtilityFilter::processBlock(AudioBuffer<float>& buffer, MidiBuffer&)
     smoothedFrequencyParam.setTargetValue(*colorParam);
     smoothedResonanceParam.setTargetValue(*resonanceParam);
 
+    this->lowpassLeft.snapToZero();
+    this->highpassLeft.snapToZero();
+    this->lowpassRight.snapToZero();
+    this->highpassRight.snapToZero();
+
     for (int sample = 0; sample < buffer.getNumSamples(); sample++)
     {
-        currentFrequency = smoothedFrequencyParam.getNextValue();
-        currentResonance = smoothedFrequencyParam.getNextValue();
-        currentCoefficients = calculateFilterCoefficientsFromColor(currentFrequency);
+        currentColor = smoothedFrequencyParam.getNextValue();
+        currentResonance = smoothedResonanceParam.getNextValue();
+        lowpassCoeffecients = calculateLowpassCoefficients(currentColor, currentResonance);
+        highpassCoeffecients = calculateHighpassCoefficients(currentColor, currentResonance);
 
         if (isInputConnected[inputLeft])
         {
-            this->filterLeft.coefficients = currentCoefficients;
+            this->lowpassLeft.coefficients = lowpassCoeffecients;
+            this->highpassLeft.coefficients = highpassCoeffecients;
+
             buffer.setSample(
                 outputLeft, 
                 sample, 
-                this->filterLeft.processSample(buffer.getSample(inputLeft, sample)));
+                this->highpassLeft.processSample(
+                    this->lowpassLeft.processSample(
+                        buffer.getSample(inputLeft, sample))));
         }
 
         if (isInputConnected[inputRight])
         {
-            this->filterRight.coefficients = currentCoefficients;
+            this->lowpassRight.coefficients = lowpassCoeffecients;
+            this->highpassRight.coefficients = highpassCoeffecients;
+
             buffer.setSample(
                 outputRight,
                 sample,
-                this->filterRight.processSample(buffer.getSample(inputRight, sample)));
+                this->highpassRight.processSample(
+                    this->lowpassRight.processSample(
+                        buffer.getSample(inputRight, sample))));
         }
     }
 }
 
-dsp::IIR::Coefficients<float>::Ptr synthvr::UtilityFilter::calculateFilterCoefficientsFromColor(float color)
+dsp::IIR::Coefficients<float>::Ptr synthvr::UtilityFilter::calculateLowpassCoefficients(float color, float resonance)
 {
-    if (color >= 0.0f)
-        return dsp::IIR::Coefficients<float>::makeHighPass(
-            sampleRate, 
-            std::pow(color, frequencySkew) * maxFrequency + minFrequency);
-    else
-        return dsp::IIR::Coefficients<float>::makeLowPass(
-            sampleRate,
-            std::pow(1.0f + color, frequencySkew) * maxFrequency + minFrequency);
+    return dsp::IIR::Coefficients<float>::makeLowPass(
+        sampleRate,
+        std::pow(std::clamp(1.0f + color, 0.0f, 1.0f), frequencySkew) * maxFrequency + minFrequency,
+        resonance);
+}
+
+dsp::IIR::Coefficients<float>::Ptr synthvr::UtilityFilter::calculateHighpassCoefficients(float color, float resonance)
+{
+    return dsp::IIR::Coefficients<float>::makeHighPass(
+        sampleRate,
+        std::pow(std::clamp(color, 0.0f, 1.0f), frequencySkew) * maxFrequency + minFrequency,
+        resonance);
 }

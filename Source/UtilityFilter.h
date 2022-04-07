@@ -21,9 +21,13 @@ namespace synthvr
         const String getName() const override { return "UtilityFilter"; }
 
     private:
-        dsp::IIR::Coefficients<float>::Ptr currentCoefficients;
-        dsp::IIR::Filter<float> filterLeft;
-        dsp::IIR::Filter<float> filterRight;
+        dsp::IIR::Filter<float> lowpassLeft;
+        dsp::IIR::Filter<float> lowpassRight;
+        dsp::IIR::Coefficients<float>::Ptr lowpassCoeffecients;
+
+        dsp::IIR::Filter<float> highpassLeft;
+        dsp::IIR::Filter<float> highpassRight;
+        dsp::IIR::Coefficients<float>::Ptr highpassCoeffecients;
 
         AudioParameterFloat* colorParam;
         AudioParameterFloat* resonanceParam;
@@ -36,9 +40,10 @@ namespace synthvr
         float minFrequency = 20.0f;
         float maxFrequency = 20000.0f;
         float frequencySkew = 3.0f;
+        float qFactor = 2.0f;
 
         double sampleRate = 1000.0f;
-        float currentFrequency = 0;
+        float currentColor = 0;
         float currentResonance = 0;
         float currentFilterOutput = 0;
 
@@ -50,8 +55,9 @@ namespace synthvr
             outputRight = 1,
         };
 
-        dsp::IIR::Coefficients<float>::Ptr calculateFilterCoefficientsFromColor(float color);
-        
+        dsp::IIR::Coefficients<float>::Ptr calculateLowpassCoefficients(float color, float resonance);
+        dsp::IIR::Coefficients<float>::Ptr calculateHighpassCoefficients(float color, float resonance);
+
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UtilityFilter)
     };
